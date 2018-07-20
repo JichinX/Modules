@@ -1,0 +1,61 @@
+
+if (isPlugin.toBoolean()) {
+    apply plugin: 'com.android.library'
+    apply plugin: 'maven'
+} else {
+    apply plugin: 'com.android.application'
+//    apply from: 'https://gitee.com/Sir_XU/codes/qmpdo91yxb8lan04z2frk91/raw?blob_name=package'
+}
+android {
+    compileSdkVersion 27
+
+    defaultConfig {
+        if (!isPlugin.toBoolean()) {
+            applicationId "com.codvision.vpn"
+        }
+        minSdkVersion 16
+        targetSdkVersion 27
+        versionCode 100
+        versionName "1.0.0"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    sourceSets {
+        main {
+            if (isPlugin.toBoolean()) {
+                manifest.srcFile 'src/main/manifest/plugin/AndroidManifest.xml'
+            } else {
+                manifest.srcFile 'src/main/manifest/app/AndroidManifest.xml'
+            }
+        }
+    }
+    repositories {
+        flatDir {
+            dirs 'libs'
+        }
+    }
+    sourceSets {
+        main {
+            jniLibs.srcDir 'libs'
+            jni.srcDirs = []
+        }
+    }
+}
+uploadArchives {
+    repositories.mavenDeployer {
+        repository(url: LOCAL_REPO_URL)
+        pom.groupId = GROUP_ID
+        pom.artifactId = project.name
+        pom.version = android.defaultConfig.versionName
+    }
+}
+dependencies {
+    api fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'com.android.support:appcompat-v7:27.1.1'
+    implementation 'me.xujichang.modules:base:1.0.0'
+}
