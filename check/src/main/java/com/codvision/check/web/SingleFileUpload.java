@@ -1,10 +1,12 @@
-package com.codvision.checksdk.web;
+package com.codvision.check.web;
 
 
-import com.codvision.base.api.CommonApi;
-import com.codvision.base.wrapper.wrapper.WrapperEntity;
-import com.codvision.checksdk.web.ext.Files;
+import com.codvision.base.wrapper.WrapperEntity;
+import com.codvision.check.CheckConst;
+import com.codvision.check.api.CommonApi;
+import com.codvision.check.web.ext.Files;
 import com.github.lzyzsd.jsbridge.CallBackFunction;
+import com.google.common.base.Strings;
 
 import java.io.File;
 
@@ -13,6 +15,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import me.xujichang.util.retrofit.RetrofitManager;
+import me.xujichang.util.simple.SilentResourceObserver;
 import me.xujichang.util.tool.StringTool;
 
 /**
@@ -57,40 +60,30 @@ public class SingleFileUpload {
     }
 
     private void uploadFile(final File file) {
-        function.onCallBack(DataType.createRespData(WebConst.StatusCode.STATUS_OK, "文件上传成功", "测试数据"));
-//        Observer<WrapperEntity<String>> observer = new Observer<WrapperEntity<String>>() {
-//            @Override
-//            public void onSubscribe(Disposable d) {
-//
-//            }
-//
-//            @Override
-//            public void onNext(WrapperEntity<String> entity) {
-//                if (entity.getCode() == 200) {
-//                    function.onCallBack(DataType.createRespData(WebConst.StatusCode.STATUS_OK, "文件上传成功", entity.getData()));
-//
-//                } else {
-//                    function.onCallBack(DataType.createRespData(entity.getCode(), WebConst.StatusCode.STATUS_SERVER_RESP, entity.getMessage(), uploadFile.getName()));
-//                }
-//            }
-//
-//            @Override
-//            public void onError(Throwable e) {
-//                function.onCallBack(DataType.createRespData(WebConst.StatusCode.STATUS_ERROR, StringTool.getErrorMsg(e), uploadFile.getName()));
-//            }
-//
-//            @Override
-//            public void onComplete() {
-//
-//            }
-//        };
-//        RetrofitManager
-//                .getOurInstance()
-//                .createReq(CommonApi.class)
-//                .uploadSingleFile(Files.fileToMultipartBodyPart(file))
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(observer);
+        SilentResourceObserver<WrapperEntity<String>> observer = new SilentResourceObserver<WrapperEntity<String>>(null) {
+
+            @Override
+            public void onNext(WrapperEntity<String> entity) {
+                if (entity.getCode() == 200) {
+                    function.onCallBack(DataType.createRespData(WebConst.StatusCode.STATUS_OK, "文件上传成功", entity.getData()));
+
+                } else {
+                    function.onCallBack(DataType.createRespData(entity.getCode(), WebConst.StatusCode.STATUS_SERVER_RESP, entity.getMessage(), uploadFile.getName()));
+                }
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                function.onCallBack(DataType.createRespData(WebConst.StatusCode.STATUS_ERROR, StringTool.getErrorMsg(e), uploadFile.getName()));
+            }
+        };
+        RetrofitManager
+                .getOurInstance()
+                .createReq(CommonApi.class)
+                .uploadSingleFile(CheckConst.PHOTO_UPLOAD_PATH, Files.fileToMultipartBodyPart(file))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(observer);
     }
 
     public SingleFileUpload withFile(File file) {

@@ -1,4 +1,4 @@
-package com.codvision.checksdk;
+package com.codvision.check.test;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,7 +7,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
 
-import com.codvision.checksdk.handler.CheckHandler;
+import com.codvision.check.R;
+import com.codvision.check.WebContainerActivity;
+import com.codvision.check.handler.CheckHandler;
 import com.google.common.base.Strings;
 
 import me.xujichang.hybirdbase.base.HybirdConst;
@@ -30,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
         if (Strings.isNullOrEmpty(url)) {
             return;
         }
-        Intent intent = new Intent(this, WebContainerActivity.class);
+        Intent intent = new Intent(this,WebContainerActivity.class);
         intent.putExtra(HybirdConst.FLAG.WEB_URL, url);
         intent.putExtra(CheckHandler.REQUEST_TOKEN, "测试Token");
         startActivity(intent);

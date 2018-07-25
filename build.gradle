@@ -3,14 +3,13 @@ ext.LOCAL_REPO_URL = 'file:///Volumes/SdCard/Development/environment/.m2/localma
 ext.GROUP_ID = 'me.xujichang.modules'
 
 buildscript {
-    
+
     repositories {
         google()
         jcenter()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.2.0-beta04'
-        
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -19,14 +18,14 @@ buildscript {
 
 allprojects {
     repositories {
-        google()
-        jcenter()
-        maven {
-            url "https://jitpack.io"
-        }
         maven {
             url '/Volumes/SdCard/Development/environment/.m2/localmaven'
         }
+        maven {
+            url "https://jitpack.io"
+        }
+        jcenter()
+        google()
     }
 }
 

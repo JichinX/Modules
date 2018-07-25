@@ -1,4 +1,4 @@
-package com.codvision.checksdk.web.ext;
+package com.codvision.check.web.ext;
 
 import android.webkit.MimeTypeMap;
 

@@ -1,4 +1,4 @@
-package com.codvision.checksdk.web;
+package com.codvision.check.web;
 
 import android.app.Activity;
 import android.content.Context;
@@ -10,7 +10,8 @@ import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 
-import com.codvision.base.utils.FileTools;
+
+import com.codvision.base.utils.file.Files;
 import com.github.lzyzsd.jsbridge.CallBackFunction;
 import com.google.gson.Gson;
 
@@ -49,7 +50,6 @@ public class PictureForWeb {
     }
 
     private PictureForWeb() {
-        storeDir = Environment.getExternalStorageDirectory();
     }
 
     public PictureForWeb withOptions(String data) {
@@ -69,13 +69,14 @@ public class PictureForWeb {
         if (null == mContext) {
             throw new RuntimeException("the Context is null");
         }
+        storeDir = mContext.getFilesDir();
         final Activity activity = (Activity) mContext;
         if (justCamera) {
             //实例化Intent对象,使用MediaStore的ACTION_IMAGE_CAPTURE常量调用系统相机
             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             //开启相机，传入
-            cachedPhotoFile = FileTools.createImageFile(activity, "tmpImg");
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, FileTools.getUriFromFile(activity, cachedPhotoFile));
+            cachedPhotoFile = Files.createImageFile(activity, "tmpImg");
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, Files.getUriFromFile(activity, cachedPhotoFile));
             activity.startActivityForResult(intent, CAMERA_REQUEST_CODE);
             return;
         }
@@ -103,8 +104,8 @@ public class PictureForWeb {
                             //实例化Intent对象,使用MediaStore的ACTION_IMAGE_CAPTURE常量调用系统相机
                             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                             //开启相机，传入
-                            cachedPhotoFile = FileTools.createImageFile(activity, "tmpImg");
-                            intent.putExtra(MediaStore.EXTRA_OUTPUT, FileTools.getUriFromFile(activity, cachedPhotoFile));
+                            cachedPhotoFile = Files.createImageFile(activity, "tmpImg");
+                            intent.putExtra(MediaStore.EXTRA_OUTPUT, Files.getUriFromFile(activity, cachedPhotoFile));
                             activity.startActivityForResult(intent, CAMERA_REQUEST_CODE);
                         }
                     }
@@ -131,14 +132,14 @@ public class PictureForWeb {
                 //相册
                 Uri uri = data.getData();
                 if (null != uri) {
-                    path = FileTools.getRealFilePath(mContext, uri);
+                    path = Files.getRealFilePath(mContext, uri);
                     srcFile = new File(path);
                 }
             }
             if (null == srcFile) {
                 sFunction.onCallBack(DataType.createErrorRespData(WebConst.StatusCode.STATUS_NATIVE_ERROR, "获取图片路径,失败"));
             } else {
-                if (FileTools.getFileSizeFormatM(srcFile) > 1) {
+                if (Files.getFileSizeFormatM(srcFile) > 1) {
                     File destFile = null;
                     try {
                         destFile = new Compressor(mContext).setDestinationDirectoryPath(storeDir.getAbsolutePath()).compressToFile(srcFile);

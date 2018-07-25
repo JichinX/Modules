@@ -1,4 +1,4 @@
-package com.codvision.checksdk.handler;
+package com.codvision.check.handler;
 
 import com.github.lzyzsd.jsbridge.BridgeWebView;
 
@@ -11,9 +11,13 @@ public class CheckHandler extends WebHandler {
      */
     public static final String REQUEST_TOKEN = "token";
     /**
-     * 获取Token信息
+     * 返回上一页
      */
     public static final String REQUEST_BACK = "back";
+    /**
+     * 退出容器
+     */
+    public static final String REQUEST_EXIT = "exit";
 
     public CheckHandler(BridgeWebView webView) {
         super(webView);
@@ -27,5 +31,6 @@ public class CheckHandler extends WebHandler {
     protected void patchWebHandler() {
         registerNativeHandler(REQUEST_TOKEN);
         registerNativeHandler(REQUEST_BACK);
+        registerNativeHandler(REQUEST_EXIT);
     }
 }

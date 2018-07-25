@@ -6,7 +6,7 @@
     android:orientation="vertical">
 
     <EditText
-        android:text="http://192.168.1.138:8848/Inspection/index.html"
+        android:text="http://192.168.1.120:8848/citybrain-mobile/index.html"
         android:id="@+id/et_url"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

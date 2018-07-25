@@ -15,8 +15,8 @@ android {
         }
         minSdkVersion 16
         targetSdkVersion 27
-        versionCode 100
-        versionName "1.0.0"
+        versionCode 101
+        versionName "1.0.1"
     }
 
     buildTypes {
@@ -57,5 +57,5 @@ uploadArchives {
 dependencies {
     api fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:27.1.1'
-    implementation 'me.xujichang.modules:base:1.0.0'
+    implementation 'me.xujichang.modules:base:1.0.4'
 }

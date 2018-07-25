@@ -1,4 +1,4 @@
-package com.codvision.checksdk.web;
+package com.codvision.check.web;
 
 import com.google.gson.Gson;
 

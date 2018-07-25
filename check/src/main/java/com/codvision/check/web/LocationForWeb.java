@@ -1,8 +1,9 @@
-package com.codvision.checksdk.web;
+package com.codvision.check.web;
 
 import android.content.Context;
 import android.util.Log;
 
+import com.codvision.check.CheckInit;
 import com.github.lzyzsd.jsbridge.CallBackFunction;
 
 import me.xujichang.hybirdbase.bean.Location;
@@ -33,6 +34,13 @@ public class LocationForWeb {
     }
 
     public void withOptions(String data) {
+        if (!Boolean.valueOf(data)) {
+            //不需要堵塞
+            Location sLocation = new Location();
+            sLocation.init(CheckInit.location);
+            sFunction.onCallBack(DataType.createRespData(WebConst.StatusCode.STATUS_OK, "获取位置信息", sLocation));
+            return;
+        }
         LocationTool
                 .getInstance()
                 .startGetLocation(mContext, new LocationTool.SimpleLocalizationListener() {

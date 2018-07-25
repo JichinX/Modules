@@ -1,14 +1,17 @@
-package com.codvision.checksdk;
+package com.codvision.check;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.webkit.WebView;
 
-import com.codvision.checksdk.handler.CheckHandler;
-import com.codvision.checksdk.web.DataType;
-import com.codvision.checksdk.web.DefaultWebViewActivity;
-import com.codvision.checksdk.web.WebConst;
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.codvision.check.handler.CheckHandler;
+import com.codvision.check.web.DataType;
+import com.codvision.check.web.DefaultWebViewActivity;
+import com.codvision.check.web.WebConst;
 import com.github.lzyzsd.jsbridge.CallBackFunction;
 import com.google.common.base.Strings;
 
@@ -35,25 +38,50 @@ public class WebContainerActivity extends DefaultWebViewActivity {
 
     @Override
     public void onJsCallBack(String type, String data, CallBackFunction function) {
-        if (CheckHandler.REQUEST_TOKEN.equals(type)) {
-            if (Strings.isNullOrEmpty(token)) {
-                function.onCallBack(DataType.createRespData(WebConst.StatusCode.STATUS_NATIVE_ERROR, "token 信息为空", ""));
-            } else {
-                function.onCallBack(DataType.createRespData(WebConst.StatusCode.STATUS_OK, "位置信息获取成功", token));
-            }
-        } else if (CheckHandler.REQUEST_BACK.equals(type)) {
-            doBack();
-        } else {
-            super.onJsCallBack(type, data, function);
+        switch (type) {
+            case CheckHandler.REQUEST_BACK:
+                doHistory();
+                break;
+            case CheckHandler.REQUEST_EXIT:
+                doExit();
+                break;
+            case CheckHandler.REQUEST_TOKEN:
+                if (Strings.isNullOrEmpty(token)) {
+                    function.onCallBack(DataType.createRespData(WebConst.StatusCode.STATUS_NATIVE_ERROR, "token 信息为空", ""));
+                } else {
+                    function.onCallBack(DataType.createRespData(WebConst.StatusCode.STATUS_OK, "位置信息获取成功", token));
+                }
+                break;
+            default:
+                super.onJsCallBack(type, data, function);
+                break;
         }
     }
 
-    private void doBack() {
+    /**
+     * 退出
+     */
+    private void doExit() {
+        showWarningDialog("返回此页面的数据将不会保留，确认返回？", new MaterialDialog.SingleButtonCallback() {
+            @Override
+            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                if (which == DialogAction.POSITIVE) {
+                    finish();
+                }
+                dialog.dismiss();
+            }
+        });
+    }
+
+    /**
+     * 返回上一页面
+     */
+    private void doHistory() {
         WebView webView = getWebView();
         if (webView.canGoBack()) {
             webView.goBack();
         } else {
-            finish();
+            doExit();
         }
     }
 }

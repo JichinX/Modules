@@ -1,4 +1,4 @@
-package com.codvision.checksdk.web;
+package com.codvision.check.web;
 
 import android.arch.lifecycle.Lifecycle;
 import android.content.Intent;
@@ -17,7 +17,7 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.Glide;
-import com.codvision.checksdk.R;
+import com.codvision.check.R;
 import com.github.lzyzsd.jsbridge.CallBackFunction;
 import com.google.common.base.Strings;
 
@@ -277,6 +277,8 @@ public class DefaultWebViewActivity extends HyBirdWebViewActivity {
             if (viewGroup != null) {
                 viewGroup.removeView(webView);
             }
+            webView.clearHistory();
+            webView.clearCache(true);
             webView.destroy();
         }
         super.onDestroy();

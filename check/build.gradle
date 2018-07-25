@@ -1,10 +1,10 @@
 if (isPlugin.toBoolean()) {
     apply plugin: 'com.android.library'
-    apply plugin: 'maven'
 } else {
     apply plugin: 'com.android.application'
     apply from: 'https://gitee.com/Sir_XU/codes/qmpdo91yxb8lan04z2frk91/raw?blob_name=package'
 }
+apply plugin: 'maven'
 repositories {
     maven {
         url "https://jitpack.io"
@@ -14,15 +14,15 @@ android {
     compileSdkVersion 27
     defaultConfig {
         if (!isPlugin.toBoolean()) {
-            applicationId "com.codvision.checksdk"
+            applicationId "com.codvision.check"
         }
         minSdkVersion 16
         targetSdkVersion 27
-        versionCode 100
-        versionName "1.0.0"
+        versionCode 107
+        versionName "1.0.7"
         multiDexEnabled true
         manifestPlaceholders = [
-                PACKAGE_NAME: "com.codvision.checksdk"
+                PACKAGE_NAME: "com.codvision.check"
         ]
     }
 
@@ -55,9 +55,10 @@ uploadArchives {
     }
 }
 dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    compileOnly fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:27.1.1'
+    implementation 'me.xujichang.modules:base:1.0.4'
 
     implementation 'com.android.support:multidex:1.0.3'
-    implementation 'me.xujichang.modules:base:1.0.0'
+    implementation 'id.zelory:compressor:2.1.0'
 }
