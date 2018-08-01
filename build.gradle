@@ -17,8 +17,11 @@ buildscript {
 
 allprojects {
     repositories {
+//        maven {
+//            url '/Volumes/SdCard/Development/environment/.m2/localmaven'
+//        }
         maven {
-            url '/Volumes/SdCard/Development/environment/.m2/localmaven'
+            url '../maven'
         }
         maven {
             url "https://jitpack.io"
