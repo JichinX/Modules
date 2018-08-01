@@ -17,8 +17,9 @@ import com.codvision.check.services.UploadLocationService;
  * created by 2018/7/23 - 9:15 AM
  */
 public class CheckInit implements IBaseInit {
-
+    public static final String INIT_TAG = "com.codvision.check.CheckInit";
     public static Location location;
+
     @Override
     public boolean onInitSpeed(Application application) {
         Utils.init(application);

@@ -1,11 +1,9 @@
-apply plugin: 'com.android.library'
-apply plugin: 'maven'
 android {
-    compileSdkVersion 27
+    compileSdkVersion compile_version
 
     defaultConfig {
-        minSdkVersion 16
-        targetSdkVersion 27
+        minSdkVersion min_version
+        targetSdkVersion target_version
         versionCode 104
         versionName "1.0.4"
     }
@@ -16,21 +14,18 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-
-}
-uploadArchives {
-    repositories.mavenDeployer {
-        repository(url: LOCAL_REPO_URL)
-        pom.groupId = GROUP_ID
-        pom.artifactId = project.name
-        pom.version = android.defaultConfig.versionName
+    compileOptions {
+        sourceCompatibility = '1.8'
+        targetCompatibility = '1.8'
     }
+
 }
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'com.android.support:appcompat-v7:27.1.1'
+    implementation "com.android.support:appcompat-v7:$support"
     api('me.xujichang.lib:hybirdbase:1.1.6') {
         exclude group: 'me.xujichang.lib', module: 'xutil'
     }
-    api 'me.xujichang.lib:xutil:1.0.8'
+    api "me.xujichang.lib:xutil:$xutil"
 }
+apply from: '../base_upload.gradle'

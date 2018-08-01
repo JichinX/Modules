@@ -1,20 +1,12 @@
-
-if (isPlugin.toBoolean()) {
-    apply plugin: 'com.android.library'
-    apply plugin: 'maven'
-} else {
-    apply plugin: 'com.android.application'
-//    apply from: 'https://gitee.com/Sir_XU/codes/qmpdo91yxb8lan04z2frk91/raw?blob_name=package'
-}
 android {
-    compileSdkVersion 27
+    compileSdkVersion compile_version
 
     defaultConfig {
         if (!isPlugin.toBoolean()) {
             applicationId "com.codvision.vpn"
         }
-        minSdkVersion 16
-        targetSdkVersion 27
+        minSdkVersion min_version
+        targetSdkVersion target_version
         versionCode 101
         versionName "1.0.1"
     }
@@ -46,16 +38,11 @@ android {
         }
     }
 }
-uploadArchives {
-    repositories.mavenDeployer {
-        repository(url: LOCAL_REPO_URL)
-        pom.groupId = GROUP_ID
-        pom.artifactId = project.name
-        pom.version = android.defaultConfig.versionName
-    }
-}
 dependencies {
     api fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:27.1.1'
     implementation 'me.xujichang.modules:base:1.0.4'
 }
+
+
+apply from: '../base_upload.gradle'

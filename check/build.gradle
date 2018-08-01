@@ -1,29 +1,14 @@
-if (isPlugin.toBoolean()) {
-    apply plugin: 'com.android.library'
-} else {
-    apply plugin: 'com.android.application'
+if (!isPlugin.toBoolean()) {
     apply from: 'https://gitee.com/Sir_XU/codes/qmpdo91yxb8lan04z2frk91/raw?blob_name=package'
 }
-apply plugin: 'maven'
-repositories {
-    maven {
-        url "https://jitpack.io"
-    }
-}
 android {
-    compileSdkVersion 27
+    compileSdkVersion compile_version
     defaultConfig {
-        if (!isPlugin.toBoolean()) {
-            applicationId "com.codvision.check"
-        }
-        minSdkVersion 16
-        targetSdkVersion 27
-        versionCode 107
-        versionName "1.0.7"
+        minSdkVersion min_version
+        targetSdkVersion target_version
+        versionCode 108
+        versionName "1.0.8"
         multiDexEnabled true
-        manifestPlaceholders = [
-                PACKAGE_NAME: "com.codvision.check"
-        ]
     }
 
     buildTypes {
@@ -36,29 +21,13 @@ android {
             }
         }
     }
-    sourceSets {
-        main {
-            if (isPlugin.toBoolean()) {
-                manifest.srcFile 'src/main/manifest/plugin/AndroidManifest.xml'
-            } else {
-                manifest.srcFile 'src/main/manifest/app/AndroidManifest.xml'
-            }
-        }
-    }
-}
-uploadArchives {
-    repositories.mavenDeployer {
-        repository(url: LOCAL_REPO_URL)
-        pom.groupId = GROUP_ID
-        pom.artifactId = project.name
-        pom.version = android.defaultConfig.versionName
-    }
 }
 dependencies {
     compileOnly fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'com.android.support:appcompat-v7:27.1.1'
-    implementation 'me.xujichang.modules:base:1.0.4'
+    implementation "com.android.support:appcompat-v7:$support"
+    implementation "me.xujichang.modules:base:$module_base"
 
     implementation 'com.android.support:multidex:1.0.3'
-    implementation 'id.zelory:compressor:2.1.0'
+    implementation "id.zelory:compressor:$compressor"
 }
+apply from: '../base_upload.gradle'

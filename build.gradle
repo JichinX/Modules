@@ -1,7 +1,5 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
-ext.LOCAL_REPO_URL = 'file:///Volumes/SdCard/Development/environment/.m2/localmaven'
-ext.GROUP_ID = 'me.xujichang.modules'
-
+apply from:'./config.gradle'
 buildscript {
 
     repositories {
@@ -10,7 +8,8 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.2.0-beta04'
-
+        classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4"
+        classpath "com.github.dcendents:android-maven-gradle-plugin:2.1"
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
@@ -27,6 +26,9 @@ allprojects {
         jcenter()
         google()
     }
+}
+subprojects{
+    apply from: '../base_top.gradle'
 }
 
 task clean(type: Delete) {

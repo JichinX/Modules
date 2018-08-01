@@ -9,9 +9,17 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/background" />
             <option value="$PROJECT_DIR$/base" />
             <option value="$PROJECT_DIR$/check" />
+            <option value="$PROJECT_DIR$/download" />
+            <option value="$PROJECT_DIR$/router" />
+            <option value="$PROJECT_DIR$/step" />
+            <option value="$PROJECT_DIR$/testapp" />
+            <option value="$PROJECT_DIR$/tts" />
+            <option value="$PROJECT_DIR$/ui" />
             <option value="$PROJECT_DIR$/vpn" />
+            <option value="$PROJECT_DIR$/web" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

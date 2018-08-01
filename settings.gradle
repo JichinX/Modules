@@ -1,1 +1,1 @@
-include ':app',':base','vpn',"check"
+include ':app',':base', ':step', ':background', ':tts', ':web', ':testapp', ':download', ':router', ':ui','vpn',"check"

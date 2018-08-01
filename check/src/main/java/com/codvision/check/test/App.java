@@ -1,10 +1,11 @@
-package com.codvision.check;
+package com.codvision.check.test;
 
 import android.app.Application;
 import android.content.Context;
 import android.support.multidex.MultiDex;
 
 import com.codvision.base.utils.InitUtil;
+import com.codvision.check.CheckConst;
 
 public class App extends Application {
     @Override

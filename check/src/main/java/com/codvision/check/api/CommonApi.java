@@ -18,7 +18,7 @@ import retrofit2.http.Part;
 import retrofit2.http.Path;
 
 /**
- * Created by xjc on 2017/6/8。
+ * Created by xjc on 2017/6/8.
  */
 
 public interface CommonApi {

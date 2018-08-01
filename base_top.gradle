@@ -1,0 +1,25 @@
+if (isPlugin.toBoolean()) {
+    apply plugin: 'com.android.library'
+    apply plugin: 'maven'
+} else {
+    apply plugin: 'com.android.application'
+}
+android {
+    defaultConfig {
+        if (!isPlugin.toBoolean()) {
+            applicationId packageName
+            manifestPlaceholders = [
+                    PACKAGE_NAME: packageName
+            ]
+        }
+    }
+    sourceSets {
+        main {
+            if (isPlugin.toBoolean()) {
+                manifest.srcFile 'src/main/manifest/plugin/AndroidManifest.xml'
+            } else {
+                manifest.srcFile 'src/main/manifest/app/AndroidManifest.xml'
+            }
+        }
+    }
+}

@@ -13,6 +13,8 @@ import com.codvision.base.ext.IBaseInit;
  * created by 2018/7/19 - 9:07 PM
  */
 public class BaseInit implements IBaseInit {
+    public static final String INIT_TAG = "com.codvision.base.BaseInit";
+
     @Override
     public boolean onInitSpeed(Application application) {
         return false;

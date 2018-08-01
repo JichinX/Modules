@@ -58,30 +58,4 @@ public class WebContainerActivity extends DefaultWebViewActivity {
         }
     }
 
-    /**
-     * 退出
-     */
-    private void doExit() {
-        showWarningDialog("返回此页面的数据将不会保留，确认返回？", new MaterialDialog.SingleButtonCallback() {
-            @Override
-            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                if (which == DialogAction.POSITIVE) {
-                    finish();
-                }
-                dialog.dismiss();
-            }
-        });
-    }
-
-    /**
-     * 返回上一页面
-     */
-    private void doHistory() {
-        WebView webView = getWebView();
-        if (webView.canGoBack()) {
-            webView.goBack();
-        } else {
-            doExit();
-        }
-    }
 }

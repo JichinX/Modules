@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
@@ -15,6 +16,7 @@ import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.Glide;
 import com.codvision.check.R;
@@ -247,7 +249,7 @@ public class DefaultWebViewActivity extends HyBirdWebViewActivity {
 
     @Override
     protected void onLeftAreaClick() {
-        finish();
+        doExit();
     }
 
     @Override
@@ -288,5 +290,32 @@ public class DefaultWebViewActivity extends HyBirdWebViewActivity {
     @Override
     protected long getActivityExitDuration() {
         return WebConst.EXIT_DURATION;
+    }
+
+    /**
+     * 退出
+     */
+    protected void doExit() {
+        showWarningDialog("退出此页面的数据将不会保留，确认退出？", new MaterialDialog.SingleButtonCallback() {
+            @Override
+            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                if (which == DialogAction.POSITIVE) {
+                    finish();
+                }
+                dialog.dismiss();
+            }
+        });
+    }
+
+    /**
+     * 返回上一页面
+     */
+    protected void doHistory() {
+        WebView webView = getWebView();
+        if (webView.canGoBack()) {
+            webView.goBack();
+        } else {
+            doExit();
+        }
     }
 }
