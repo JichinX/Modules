@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import com.codvision.step.ITodayStepDBHelper;
-import com.codvision.step.bean.TodayStepData;
+import com.codvision.step.bean.StepData;
 import com.codvision.step.utils.DateUtils;
 import com.codvision.step.utils.Logger;
 
@@ -74,8 +74,8 @@ public class TodayStepDBHelper extends SQLiteOpenHelper implements ITodayStepDBH
     }
 
     @Override
-    public synchronized boolean isExist(TodayStepData todayStepData) {
-        Cursor cursor = getReadableDatabase().rawQuery(SQL_QUERY_STEP, new String[]{todayStepData.getToday(), todayStepData.getStep() + ""});
+    public synchronized boolean isExist(StepData stepData) {
+        Cursor cursor = getReadableDatabase().rawQuery(SQL_QUERY_STEP, new String[]{stepData.getToday(), stepData.getStep() + ""});
         boolean exist = cursor.getCount() > 0 ? true : false;
         cursor.close();
         return exist;
@@ -87,12 +87,12 @@ public class TodayStepDBHelper extends SQLiteOpenHelper implements ITodayStepDBH
     }
 
     @Override
-    public synchronized void insert(TodayStepData todayStepData) {
+    public synchronized void insert(StepData stepData) {
 
         ContentValues contentValues = new ContentValues();
-        contentValues.put(TODAY, todayStepData.getToday());
-        contentValues.put(DATE, todayStepData.getDate());
-        contentValues.put(STEP, todayStepData.getStep());
+        contentValues.put(TODAY, stepData.getToday());
+        contentValues.put(DATE, stepData.getDate());
+        contentValues.put(STEP, stepData.getStep());
         getWritableDatabase().insert(TABLE_NAME, null, contentValues);
     }
 
@@ -107,11 +107,11 @@ public class TodayStepDBHelper extends SQLiteOpenHelper implements ITodayStepDBH
     }
 
     @Override
-    public synchronized List<TodayStepData> getQueryAll() {
+    public synchronized List<StepData> getQueryAll() {
         Cursor cursor = getReadableDatabase().rawQuery(SQL_QUERY_ALL, new String[]{});
-        List<TodayStepData> todayStepDatas = getTodayStepDataList(cursor);
+        List<StepData> stepData = getTodayStepDataList(cursor);
         cursor.close();
-        return todayStepDatas;
+        return stepData;
     }
 
     /**
@@ -121,11 +121,11 @@ public class TodayStepDBHelper extends SQLiteOpenHelper implements ITodayStepDBH
      * @return
      */
     @Override
-    public synchronized List<TodayStepData> getStepListByDate(String dateString) {
+    public synchronized List<StepData> getStepListByDate(String dateString) {
         Cursor cursor = getReadableDatabase().rawQuery(SQL_QUERY_STEP_BY_DATE, new String[]{dateString});
-        List<TodayStepData> todayStepDatas = getTodayStepDataList(cursor);
+        List<StepData> stepData = getTodayStepDataList(cursor);
         cursor.close();
-        return todayStepDatas;
+        return stepData;
     }
 
     /**
@@ -140,18 +140,18 @@ public class TodayStepDBHelper extends SQLiteOpenHelper implements ITodayStepDBH
      * @return
      */
     @Override
-    public synchronized List<TodayStepData> getStepListByStartDateAndDays(String lastDate, int days) {
-        List<TodayStepData> todayStepDatas = new ArrayList<>();
+    public synchronized List<StepData> getStepListByStartDateAndDays(String lastDate, int days) {
+        List<StepData> stepData = new ArrayList<>();
         for (int i = 0; i < days; i++) {
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(DateUtils.getDateMillis(lastDate, DATE_PATTERN_YYYY_MM_DD));
             calendar.add(Calendar.DAY_OF_YEAR, -i);
             Cursor cursor = getReadableDatabase().rawQuery(SQL_QUERY_STEP_BY_DATE,
                     new String[]{DateUtils.dateFormat(calendar.getTimeInMillis(), DATE_PATTERN_YYYY_MM_DD)});
-            todayStepDatas.addAll(getTodayStepDataList(cursor));
+            stepData.addAll(getTodayStepDataList(cursor));
             cursor.close();
         }
-        return todayStepDatas;
+        return stepData;
     }
 
     @Override
@@ -167,20 +167,20 @@ public class TodayStepDBHelper extends SQLiteOpenHelper implements ITodayStepDBH
         return istep;
     }
 
-    private List<TodayStepData> getTodayStepDataList(Cursor cursor) {
+    private List<StepData> getTodayStepDataList(Cursor cursor) {
 
-        List<TodayStepData> todayStepDatas = new ArrayList<>();
+        List<StepData> stepData = new ArrayList<>();
         while (cursor.moveToNext()) {
             String today = cursor.getString(cursor.getColumnIndex(TODAY));
             long date = cursor.getLong(cursor.getColumnIndex(DATE));
             long step = cursor.getLong(cursor.getColumnIndex(STEP));
-            TodayStepData todayStepData = new TodayStepData();
-            todayStepData.setToday(today);
-            todayStepData.setDate(date);
-            todayStepData.setStep(step);
-            todayStepDatas.add(todayStepData);
+            StepData stepData = new StepData();
+            stepData.setToday(today);
+            stepData.setDate(date);
+            stepData.setStep(step);
+            stepData.add(stepData);
         }
-        return todayStepDatas;
+        return stepData;
     }
 
     /**
@@ -204,12 +204,12 @@ public class TodayStepDBHelper extends SQLiteOpenHelper implements ITodayStepDBH
             String date = DateUtils.dateFormat(calendar.getTimeInMillis(), DATE_PATTERN_YYYY_MM_DD);
             Log.e(TAG, date);
 
-            List<TodayStepData> todayStepDataList = getQueryAll();
+            List<StepData> stepDataList = getQueryAll();
             Set<String> delDateSet = new HashSet<>();
-            for (TodayStepData tmpTodayStepData : todayStepDataList) {
-                long dbTodayDate = DateUtils.getDateMillis(tmpTodayStepData.getToday(), DATE_PATTERN_YYYY_MM_DD);
+            for (StepData tmpStepData : stepDataList) {
+                long dbTodayDate = DateUtils.getDateMillis(tmpStepData.getToday(), DATE_PATTERN_YYYY_MM_DD);
                 if (calendar.getTimeInMillis() >= dbTodayDate) {
-                    delDateSet.add(tmpTodayStepData.getToday());
+                    delDateSet.add(tmpStepData.getToday());
                 }
             }
 

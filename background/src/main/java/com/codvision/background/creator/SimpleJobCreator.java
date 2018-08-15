@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.codvision.background.job.UploadJob;
+import com.codvision.background.job.UploadJsonDataJob;
 import com.evernote.android.job.Job;
 import com.evernote.android.job.JobCreator;
 import com.evernote.android.job.JobManager;
@@ -25,9 +26,9 @@ public class SimpleJobCreator implements JobCreator {
     @Override
     public Job create(@NonNull String tag) {
         switch (tag) {
-            case UploadJob.TAG:
+            case UploadJsonDataJob.TAG:
                 LogTool.d("SimpleJobCreator: ...........UploadJob");
-                return new UploadJob();
+                return new UploadJsonDataJob();
             default:
                 return null;
         }

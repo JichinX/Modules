@@ -1,5 +1,5 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
-apply from:'./config.gradle'
+apply from: './config.gradle'
 buildscript {
 
     repositories {
@@ -17,11 +17,16 @@ buildscript {
 
 allprojects {
     repositories {
+        maven {
+            url LOCAL_REPO_URL
+        }
+        //mbp 13
 //        maven {
 //            url '/Volumes/SdCard/Development/environment/.m2/localmaven'
 //        }
+        //mbp 15
         maven {
-            url '../maven'
+            url "${rootDir}/maven"
         }
         maven {
             url "https://jitpack.io"
@@ -30,7 +35,7 @@ allprojects {
         google()
     }
 }
-subprojects{
+subprojects {
     apply from: '../base_top.gradle'
 }
 

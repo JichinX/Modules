@@ -3,7 +3,7 @@ package com.codvision.step.utils;
 import android.content.Context;
 import android.os.PowerManager;
 
-import com.codvision.step.service.TodayStepService;
+import com.codvision.step.service.StepService;
 
 import java.util.Calendar;
 
@@ -29,7 +29,7 @@ public class WakeLockUtils {
             PowerManager mgr = (PowerManager) context
                     .getSystemService(Context.POWER_SERVICE);
             mWakeLock = mgr.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
-                    TodayStepService.class.getName());
+                    StepService.class.getName());
             mWakeLock.setReferenceCounted(true);
             Calendar c = Calendar.getInstance();
             c.setTimeInMillis(System.currentTimeMillis());

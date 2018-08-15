@@ -4,7 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import com.codvision.step.service.TodayStepService;
+import com.codvision.step.service.StepService;
 import com.codvision.step.utils.Logger;
 import com.codvision.step.utils.StepAlertManagerUtils;
 
@@ -20,9 +20,9 @@ public class TodayStepAlertReceive extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         if (ACTION_STEP_ALERT.equals(intent.getAction())) {
-            boolean separate = intent.getBooleanExtra(TodayStepService.INTENT_NAME_0_SEPARATE, false);
-            Intent stepInent = new Intent(context, TodayStepService.class);
-            stepInent.putExtra(TodayStepService.INTENT_NAME_0_SEPARATE, separate);
+            boolean separate = intent.getBooleanExtra(StepService.INTENT_NAME_0_SEPARATE, false);
+            Intent stepInent = new Intent(context, StepService.class);
+            stepInent.putExtra(StepService.INTENT_NAME_0_SEPARATE, separate);
             context.startService(stepInent);
 
             StepAlertManagerUtils.set0SeparateAlertManager(context.getApplicationContext());

@@ -21,7 +21,7 @@ public class JobSchedulerService extends JobService {
 
     @Override
     public boolean onStartJob(JobParameters params) {
-        Intent intent = new Intent(getApplication(), TodayStepService.class);
+        Intent intent = new Intent(getApplication(), StepService.class);
         getApplication().startService(intent);
 
 //        Toast.makeText(getApplicationContext(), "onStartJob", Toast.LENGTH_SHORT).show();

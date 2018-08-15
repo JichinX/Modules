@@ -2,7 +2,7 @@ package com.codvision.step;
 
 import android.content.Context;
 
-import com.codvision.step.bean.TodayStepData;
+import com.codvision.step.bean.StepData;
 
 import java.util.List;
 
@@ -21,17 +21,17 @@ public interface ITodayStepDBHelper {
 
     void clearCapacity(String curDate, int limit);
 
-    boolean isExist(TodayStepData todayStepData);
+    boolean isExist(StepData stepData);
 
-    void insert(TodayStepData todayStepData);
+    void insert(StepData stepData);
 
     void delete(String date, Context context);
 
-    List<TodayStepData> getQueryAll();
+    List<StepData> getQueryAll();
 
-    List<TodayStepData> getStepListByDate(String dateString);
+    List<StepData> getStepListByDate(String dateString);
 
-    List<TodayStepData> getStepListByStartDateAndDays(String startDate, int days);
+    List<StepData> getStepListByStartDateAndDays(String startDate, int days);
 
     int getCurrentStep(String date);
 }

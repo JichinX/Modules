@@ -40,15 +40,8 @@ public abstract class UploadJob extends BaseJob {
     }
 
     public UploadJob(JobCenter.CenterConfig config, IBaseJobCallBack callBack) {
-        if (null == config) {
-            usedConfig = defaultConfig;
-        }
-        if (null == callBack) {
-            usedCallback = createJobCallBack();
-        }
-        if (null == usedCallback) {
-            usedCallback = defaultJobCallBack;
-        }
+        usedConfig = null == config ? defaultConfig : config;
+        usedCallback = null == callBack ? createJobCallBack() : callBack;
     }
 
     protected abstract IBaseJobCallBack createJobCallBack();

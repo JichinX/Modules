@@ -1,5 +1,8 @@
 package com.codvision.background;
 
+import com.codvision.base.BaseConst;
+import com.codvision.base.BaseInit;
+
 /**
  * Project: Modules
  * Des:
@@ -9,10 +12,7 @@ package com.codvision.background;
  */
 public class BackgroundConst {
     public static final class Modules {
-        public static final String BaseInit = "com.codvision.base.BaseInit";
-        public static final String BackgroundInit = "com.codvision.background.BackgroundInit";
-
-        public static String[] inits = {BaseInit, BackgroundInit};
+        public static String[] inits = {BaseInit.INIT_TAG, BackgroundInit.INIT_FLAG};
     }
 
     public static final class JobUpload {

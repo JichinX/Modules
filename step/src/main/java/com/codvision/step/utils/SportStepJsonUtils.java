@@ -1,7 +1,7 @@
 package com.codvision.step.utils;
 
 
-import com.codvision.step.bean.TodayStepData;
+import com.codvision.step.bean.StepData;
 import com.codvision.step.dao.TodayStepDBHelper;
 
 import org.json.JSONArray;
@@ -25,20 +25,20 @@ public class SportStepJsonUtils {
     public static final String CALORIE = "kaluli";
     public static final String TODAY = TodayStepDBHelper.TODAY;
 
-    public static JSONArray getSportStepJsonArray(List<TodayStepData> todayStepDataArrayList) {
+    public static JSONArray getSportStepJsonArray(List<StepData> stepDataArrayList) {
         JSONArray jsonArray = new JSONArray();
-        if (null == todayStepDataArrayList || 0 == todayStepDataArrayList.size()) {
+        if (null == stepDataArrayList || 0 == stepDataArrayList.size()) {
             return jsonArray;
         }
-        for (int i = 0; i < todayStepDataArrayList.size(); i++) {
-            TodayStepData todayStepData = todayStepDataArrayList.get(i);
+        for (int i = 0; i < stepDataArrayList.size(); i++) {
+            StepData stepData = stepDataArrayList.get(i);
             try {
                 JSONObject subObject = new JSONObject();
-                subObject.put(TODAY, todayStepData.getToday());
-                subObject.put(SPORT_DATE, todayStepData.getDate());
-                subObject.put(STEP_NUM, todayStepData.getStep());
-                subObject.put(DISTANCE, getDistanceByStep(todayStepData.getStep()));
-                subObject.put(CALORIE, getCalorieByStep(todayStepData.getStep()));
+                subObject.put(TODAY, stepData.getToday());
+                subObject.put(SPORT_DATE, stepData.getDate());
+                subObject.put(STEP_NUM, stepData.getStep());
+                subObject.put(DISTANCE, getDistanceByStep(stepData.getStep()));
+                subObject.put(CALORIE, getCalorieByStep(stepData.getStep()));
                 jsonArray.put(subObject);
             } catch (JSONException e) {
                 e.printStackTrace();

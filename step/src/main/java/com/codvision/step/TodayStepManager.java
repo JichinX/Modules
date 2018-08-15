@@ -10,7 +10,7 @@ import android.os.Build;
 import android.support.annotation.RequiresApi;
 
 import com.codvision.step.service.JobSchedulerService;
-import com.codvision.step.service.TodayStepService;
+import com.codvision.step.service.StepService;
 import com.codvision.step.utils.Logger;
 import com.codvision.step.utils.StepAlertManagerUtils;
 
@@ -30,8 +30,8 @@ public class TodayStepManager {
      * @param application
      */
     public static void init(Application application) {
-
-        StepAlertManagerUtils.set0SeparateAlertManager(application);//0点分隔
+        //0点分隔
+        StepAlertManagerUtils.set0SeparateAlertManager(application);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 //            initJobScheduler(application);
@@ -43,7 +43,7 @@ public class TodayStepManager {
 
     //启动服务,调用服务里的onCreate()和onStartCommand(),新建数据库实例，sensorManager实例，初始化通知,更新通知，注册传感器
     public static void startTodayStepService(Application application) {
-        Intent intent = new Intent(application, TodayStepService.class);
+        Intent intent = new Intent(application, StepService.class);
         application.startService(intent);
     }
 

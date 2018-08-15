@@ -1,6 +1,7 @@
 package com.codvision.vpn;
 
 import android.app.Activity;
+import android.content.Context;
 
 import com.google.common.base.Strings;
 import com.sangfor.ssl.BaseMessage;
@@ -16,6 +17,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import me.xujichang.util.tool.LogTool;
+import me.xujichang.util.tool.StringTool;
 
 /**
  * Project: Platform
@@ -152,33 +154,49 @@ public class VpnCenter {
     }
 
     public void login() {
+        login(true);
+    }
+
+    public void login(boolean ticketAuth) {
         Activity context = contextWeakReference.get();
         if (null == context) {
+            resultListener.onLoginError("Context is already null");
             return;
         }
         initLoginParms();
         //判断是否开启免密，如果免密直接进行一次登录，如果无法免密或免密登录失败，走正常流程
         //允许免密，直接走免密流程
-        if (mSFManager.ticketAuthAvailable(context)) {
-            try {
-                LogTool.d("VPN Login ticketAuth ---------");
-                //开启登录进度框
-                mSFManager.startTicketAuthLogin(context.getApplication(), context, vpnMode);
-            } catch (SFException e) {
-                //关闭登录进度框
-            }
+        if (ticketAuth && mSFManager.ticketAuthAvailable(context)) {
+            loginTicketAuth(context);
         } else {
-            try {
-                mSFManager.addStatusChangedListener(statusChangedListener);
-                mSFManager.startPasswordAuthLogin(context.getApplication(), context, vpnMode,
-                        connectUrl(), account, pwd);
-            } catch (SFException e) {
-                e.printStackTrace();
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            }
+            loginWithAccount(context);
         }
     }
+
+    private void loginWithAccount(Activity context) {
+        try {
+            mSFManager.addStatusChangedListener(statusChangedListener);
+            mSFManager.startPasswordAuthLogin(context.getApplication(), context, vpnMode,
+                    connectUrl(), account, pwd);
+        } catch (SFException e) {
+            e.printStackTrace();
+            resultListener.onLoginError(StringTool.getErrorMsg(e));
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            resultListener.onLoginError(StringTool.getErrorMsg(e));
+        }
+    }
+
+    private void loginTicketAuth(Activity context) {
+        try {
+            LogTool.d("VPN Login ticketAuth ---------");
+            mSFManager.startTicketAuthLogin(context.getApplication(), context, vpnMode);
+        } catch (SFException e) {
+            e.printStackTrace();
+            resultListener.onLoginError(StringTool.getErrorMsg(e));
+        }
+    }
+
 
     private URL connectUrl() throws MalformedURLException {
         String url = String.format("https://%s:%s", IPAddress, vpnPort);
@@ -194,6 +212,7 @@ public class VpnCenter {
             mSFManager.setLoginResultListener(resultListener);
         } catch (SFException e) {
             LogTool.d("VPN Exception:reason[" + e.getMessage() + "]");
+            resultListener.onLoginError(StringTool.getErrorMsg(e));
         }
 
         //3.设置登录超时时间，单位为秒

@@ -23,20 +23,18 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation "com.android.support:appcompat-v7:$support"
-    implementation "me.xujichang.modules:base:$module_base"
+//    implementation "me.xujichang.modules:base:$module_base"
     implementation "com.evernote:android-job:$android_job"
     implementation "android.arch.work:work-runtime:$worker_runtime"
     //room
     implementation "android.arch.persistence.room:runtime:$room"
-
     // optional - RxJava support for Room
     implementation "android.arch.persistence.room:rxjava2:$room"
-
     // optional - Guava support for Room, including Optional and ListenableFuture
     implementation "android.arch.persistence.room:guava:$room"
-
     annotationProcessor "android.arch.persistence.room:compiler:$room"
+    implementation project(':base')
 }
 apply from: '../base_upload.gradle'

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">TodayStepCounterLib</string>
+    <string name="app_name">StepDemo</string>
 
     <string name="title_notification_bar">当前步数:%1$s</string>
 </resources>

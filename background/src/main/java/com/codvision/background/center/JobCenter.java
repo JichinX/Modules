@@ -90,7 +90,6 @@ public class JobCenter {
     public static void startPeriodJob(BaseJob job) {
         CenterConfig config = job.getUsedConfig();
         startPeriodJob(config);
-        LogTool.d("startPeriodJob------job  jobs:" + jobIds.size());
     }
 
     /**
@@ -267,10 +266,10 @@ public class JobCenter {
         public static final class Builder {
             private long minInterval;
             private long minFlex;
-            private JobRequest.NetworkType requireNetType;
-            private boolean requireBatteryNotLow;
-            private boolean requireDeviceIdle;
-            private String tag;
+            private JobRequest.NetworkType requireNetType = JobRequest.NetworkType.ANY;
+            private boolean requireBatteryNotLow = false;
+            private boolean requireDeviceIdle = false;
+            private String tag = "default";
 
             public Builder() {
             }

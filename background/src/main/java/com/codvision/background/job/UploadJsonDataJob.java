@@ -1,15 +1,8 @@
 package com.codvision.background.job;
 
-import com.codvision.background.api.ApiStores;
-import com.codvision.background.base.retrofit.RetrofitCenter;
-import com.codvision.background.base.rxjava.RxSchedulers;
 import com.codvision.background.center.JobCenter;
-import com.codvision.base.wrapper.WrapperEntity;
 
-import java.nio.file.WatchEvent;
-
-import me.xujichang.util.simple.SimpleObserver;
-import me.xujichang.util.simple.SimpleResourceObserver;
+import me.xujichang.util.tool.LogTool;
 
 /**
  * Project: Modules
@@ -18,21 +11,19 @@ import me.xujichang.util.simple.SimpleResourceObserver;
  * @author xujichang
  * created by 2018/7/26 - 4:26 PM
  */
-public class UploadJsonDataJob<T> extends UploadJob {
-    private T data;
+public class UploadJsonDataJob extends UploadJob {
+    public static final String TAG = "upload_json";
 
-    public UploadJsonDataJob(JobCenter.CenterConfig config, T data) {
-        this(config, null, data);
+    public UploadJsonDataJob(JobCenter.CenterConfig config) {
+        this(config, null);
     }
 
-    public UploadJsonDataJob(T data) {
-        this(null, data);
+    public UploadJsonDataJob() {
+        this(null);
     }
 
-
-    public UploadJsonDataJob(JobCenter.CenterConfig config, IBaseJobCallBack callBack, T data) {
+    public UploadJsonDataJob(JobCenter.CenterConfig config, IBaseJobCallBack callBack) {
         super(config, callBack);
-        this.data = data;
     }
 
     @Override
@@ -43,17 +34,20 @@ public class UploadJsonDataJob<T> extends UploadJob {
     private class JsonUpload implements IBaseJobCallBack {
         @Override
         public Result onJobRun() {
-            //默认的上传json数据的方法
-            RetrofitCenter
-                    .getApi(ApiStores.class)
-                    .getString()
-                    .compose(RxSchedulers.observableTransformer_io_main())
-                    .subscribe(new SimpleResourceObserver<WrapperEntity<String>>(null) {
-                        @Override
-                        public void onNext(WrapperEntity s) {
-
-                        }
-                    });
+            //模拟从数据库取出json数据
+            String jsonStr = "";
+            LogTool.d("上传数据...json 数据");
+//            //默认的上传json数据的方法
+//            RetrofitCenter
+//                    .getApi(ApiStores.class)
+//                    .uploadJsonData(jsonStr)
+//                    .compose(RxSchedulers.observableTransformer_io_main())
+//                    .subscribe(new SimpleResourceObserver<WrapperEntity<String>>(null) {
+//                        @Override
+//                        public void onNext(WrapperEntity s) {
+//
+//                        }
+//                    });
             return Result.SUCCESS;
         }
     }

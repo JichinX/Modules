@@ -3,6 +3,7 @@ package com.codvision.background.api;
 import com.codvision.base.wrapper.WrapperEntity;
 
 import io.reactivex.Observable;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
 
 /**
@@ -16,5 +17,5 @@ public interface ApiStores {
     String REMOTE_URL = "";
 
     @GET("/test")
-    Observable<WrapperEntity<String>> getString();
+    Observable<WrapperEntity<String>> uploadJsonData(@Body String json);
 }
