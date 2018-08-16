@@ -6,8 +6,8 @@ android {
     defaultConfig {
         minSdkVersion min_version
         targetSdkVersion target_version
-        versionCode 109
-        versionName "1.0.9"
+        versionCode 110
+        versionName "1.1.0"
         multiDexEnabled true
     }
 
@@ -21,13 +21,17 @@ android {
             }
         }
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 dependencies {
     compileOnly fileTree(include: ['*.jar'], dir: 'libs')
     implementation "com.android.support:appcompat-v7:$support"
     implementation "me.xujichang.modules:base:$module_base"
-
     implementation 'com.android.support:multidex:1.0.3'
     implementation "id.zelory:compressor:$compressor"
+    implementation 'com.king.zxing:zxing-lite:1.0.0'
 }
 apply from: '../base_upload.gradle'

@@ -42,3 +42,7 @@ subprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+public boolean isMbp15() {
+    return true
+}

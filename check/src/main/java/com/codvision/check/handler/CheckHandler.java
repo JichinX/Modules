@@ -18,6 +18,10 @@ public class CheckHandler extends WebHandler {
      * 退出容器
      */
     public static final String REQUEST_EXIT = "exit";
+    /**
+     * 请求二维码扫描
+     */
+    public static final String REQUEST_QR = "qr";
 
     public CheckHandler(BridgeWebView webView) {
         super(webView);
@@ -32,5 +36,6 @@ public class CheckHandler extends WebHandler {
         registerNativeHandler(REQUEST_TOKEN);
         registerNativeHandler(REQUEST_BACK);
         registerNativeHandler(REQUEST_EXIT);
+        registerNativeHandler(REQUEST_QR);
     }
 }

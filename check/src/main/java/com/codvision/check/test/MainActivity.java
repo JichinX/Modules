@@ -30,9 +30,9 @@ public class MainActivity extends AppCompatActivity {
     public void goToWeb(View view) {
         String url = mEtUrl.getText().toString();
         if (Strings.isNullOrEmpty(url)) {
-            return;
+            url = "file:///android_asset/web/index.html";
         }
-        Intent intent = new Intent(this,WebContainerActivity.class);
+        Intent intent = new Intent(this, WebContainerActivity.class);
         intent.putExtra(HybirdConst.FLAG.WEB_URL, url);
         intent.putExtra(CheckHandler.REQUEST_TOKEN, "测试Token");
         startActivity(intent);

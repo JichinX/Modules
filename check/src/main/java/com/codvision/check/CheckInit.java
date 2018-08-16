@@ -44,7 +44,7 @@ public class CheckInit implements IBaseInit {
 
     @Override
     public boolean onInitSpeed(Application application) {
-        BaseConst.enablePacketService = true;
+//        BaseConst.enablePacketService = false;
         Task uploadTask = new Task();
         uploadTask.setRunnable(new UploadLocationRunnable());
         TaskCenter.push(uploadTask);
