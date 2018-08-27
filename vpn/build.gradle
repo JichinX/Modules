@@ -2,13 +2,10 @@ android {
     compileSdkVersion compile_version
 
     defaultConfig {
-        if (!isPlugin.toBoolean()) {
-            applicationId "com.codvision.vpn"
-        }
         minSdkVersion min_version
         targetSdkVersion target_version
-        versionCode 102
-        versionName "1.0.2"
+        versionCode 103
+        versionName "1.0.3"
     }
 
     buildTypes {

@@ -36,7 +36,7 @@
         </activity>
         <activity android:name=".WebContainerActivity" />
 
-        <service android:name=".services.UploadLocationService" />
+        <!--<service android:name=".services.UploadLocationService" />-->
 
     </application>
 </manifest>
