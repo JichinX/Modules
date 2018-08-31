@@ -2,8 +2,9 @@ package com.codvision.check.handler;
 
 import com.github.lzyzsd.jsbridge.BridgeWebView;
 
-import me.xujichang.hybirdbase.module.web.handler.WebHandler;
-import me.xujichang.hybirdbase.module.web.interfaces.IWebJsCallBack;
+import me.xujichang.web.handler.WebHandler;
+import me.xujichang.web.interfaces.IWebJsCallBack;
+
 
 public class CheckHandler extends WebHandler {
     /**

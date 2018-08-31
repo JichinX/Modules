@@ -22,7 +22,7 @@
     <application>
         <!--<service android:name=".services.UploadLocationService" />-->
         <activity
-            android:name=".WebContainerActivity"
+            android:name=".impl.WebContainerActivity"
             android:theme="@style/NoActionBarTheme" />
     </application>
 </manifest>

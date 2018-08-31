@@ -1,28 +1,24 @@
 package com.codvision.check;
 
 import android.app.Application;
-import android.content.Intent;
 import android.location.Location;
-import android.os.Build;
 
-import com.codvision.base.BaseConst;
-import com.codvision.base.ext.IBaseInit;
-import com.codvision.base.services.Task;
-import com.codvision.base.services.TaskCenter;
-import com.codvision.base.utils.third.thirdparty.DeviceUtils;
-import com.codvision.base.utils.third.thirdparty.LocationUtils;
-import com.codvision.base.utils.third.thirdparty.Utils;
-import com.codvision.base.wrapper.WrapperEntity;
 import com.codvision.check.api.CommonApi;
 import com.codvision.check.bean.LocationUpload;
-import com.codvision.check.services.UploadLocationService;
 
 import java.util.Date;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
+import me.xujichang.basic.IBaseInit;
+import me.xujichang.basic.services.Task;
+import me.xujichang.basic.services.TaskCenter;
+import me.xujichang.basic.wrapper.WrapperEntity;
 import me.xujichang.util.retrofit.RetrofitManager;
 import me.xujichang.util.simple.SilentResourceObserver;
+import me.xujichang.util.thirdparty.DeviceUtils;
+import me.xujichang.util.thirdparty.LocationUtils;
+import me.xujichang.util.thirdparty.Utils;
 import me.xujichang.util.tool.LogTool;
 
 /**

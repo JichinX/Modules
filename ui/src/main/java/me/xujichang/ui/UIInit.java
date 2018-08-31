@@ -2,9 +2,9 @@ package me.xujichang.ui;
 
 import android.app.Application;
 
-import com.codvision.base.ext.IBaseInit;
 
-import me.xujichang.ui.utils.UIGlobalUtil;
+import me.xujichang.basic.IBaseInit;
+import me.xujichang.ui.utils.GlobalUtil;
 
 /**
  * Des:
@@ -18,7 +18,7 @@ public class UIInit implements IBaseInit {
 
     @Override
     public boolean onInitSpeed(Application application) {
-        UIGlobalUtil.init(application);
+        GlobalUtil.init(application);
         return false;
     }
 

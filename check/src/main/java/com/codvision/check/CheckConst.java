@@ -1,5 +1,8 @@
 package com.codvision.check;
 
+import me.xujichang.basic.BaseInit;
+import me.xujichang.ui.UIInit;
+
 /**
  * Project: accidenthandling
  * Des:
@@ -19,9 +22,6 @@ public class CheckConst {
     }
 
     public static final class Modules {
-        public static final String BaseInit = "com.codvision.base.BaseInit";
-        public static final String CheckInit = "com.codvision.check.CheckInit";
-
-        public static String[] inits = {BaseInit, CheckInit};
+        public static String[] inits = {BaseInit.INIT_TAG, CheckInit.INIT_TAG, UIInit.INIT_TAG};
     }
 }

@@ -1,6 +1,6 @@
 package me.xujichang.ui;
 
-import me.xujichang.ui.actionbar.XActionBar;
+import me.xujichang.ui.activity.actionbar.XActionBar;
 
 /**
  * Des:
@@ -11,4 +11,8 @@ import me.xujichang.ui.actionbar.XActionBar;
  */
 public class UIConfig {
     public static XActionBar actionBar = XActionBar.DEFAULT;
+
+    public class Time {
+        public static final long EXIT_DURATION = 1500;
+    }
 }

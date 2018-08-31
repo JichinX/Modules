@@ -1,7 +1,7 @@
 package me.xujichang.ui.test;
 
-import com.codvision.base.BaseInit;
 
+import me.xujichang.basic.BaseInit;
 import me.xujichang.ui.UIInit;
 
 /**

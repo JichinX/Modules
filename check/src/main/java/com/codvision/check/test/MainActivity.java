@@ -8,11 +8,12 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.codvision.check.R;
-import com.codvision.check.WebContainerActivity;
+import com.codvision.check.impl.WebContainerActivity;
 import com.codvision.check.handler.CheckHandler;
 import com.google.common.base.Strings;
 
-import me.xujichang.hybirdbase.base.HybirdConst;
+import me.xujichang.web.WebConst;
+
 
 /**
  * @author xujichang
@@ -33,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
             url = "file:///android_asset/web/index.html";
         }
         Intent intent = new Intent(this, WebContainerActivity.class);
-        intent.putExtra(HybirdConst.FLAG.WEB_URL, url);
+        intent.putExtra(WebConst.FLAG.WEB_URL, url);
         intent.putExtra(CheckHandler.REQUEST_TOKEN, "测试Token");
         startActivity(intent);
     }

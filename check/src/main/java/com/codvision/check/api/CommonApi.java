@@ -1,12 +1,12 @@
 package com.codvision.check.api;
 
 
-import com.codvision.base.wrapper.WrapperEntity;
 import com.codvision.check.bean.LocationUpload;
 
 import java.util.List;
 
 import io.reactivex.Observable;
+import me.xujichang.basic.wrapper.WrapperEntity;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.http.Body;

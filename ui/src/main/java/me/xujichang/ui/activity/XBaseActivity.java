@@ -1,5 +1,6 @@
 package me.xujichang.ui.activity;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -9,6 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.DrawableRes;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
@@ -20,21 +22,36 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.google.common.base.Strings;
+
+import java.util.Collections;
+import java.util.List;
 
 import me.xujichang.ui.R;
-import me.xujichang.ui.actionbar.ActionWhich;
-import me.xujichang.ui.actionbar.DefaultActionBar;
-import me.xujichang.ui.actionbar.IActionBar;
-import me.xujichang.ui.actionbar.IActionClick;
-import me.xujichang.ui.dialog.DialogWhich;
-import me.xujichang.ui.dialog.IDialog;
-import me.xujichang.ui.dialog.IDialogCallBack;
-import me.xujichang.ui.dialog.MDDialog;
-import me.xujichang.ui.utils.UIGlobalUtil;
+import me.xujichang.ui.UIConfig;
+import me.xujichang.ui.activity.actionbar.ActionWhich;
+import me.xujichang.ui.activity.actionbar.DefaultActionBar;
+import me.xujichang.ui.activity.actionbar.IActionBar;
+import me.xujichang.ui.activity.actionbar.IActionClick;
+import me.xujichang.ui.activity.dialog.DialogWhich;
+import me.xujichang.ui.activity.dialog.IDialog;
+import me.xujichang.ui.activity.dialog.IDialogCallBack;
+import me.xujichang.ui.activity.dialog.MDDialog;
+import me.xujichang.ui.activity.loading.ILoading;
+import me.xujichang.ui.activity.loading.LoadingStatus;
+import me.xujichang.ui.activity.loading.MDLoading;
+import me.xujichang.ui.activity.toast.IToast;
+import me.xujichang.ui.promission.DefaultPermission;
+import me.xujichang.ui.promission.IPermission;
+import me.xujichang.ui.promission.IPermissionCallBack;
+import me.xujichang.ui.utils.GlobalUtil;
+import me.xujichang.ui.utils.IExitCallBack;
+import me.xujichang.ui.utils.StringUtil;
+import me.xujichang.util.simple.interfaces.XOnClickListener;
 import me.xujichang.util.tool.LogTool;
+import me.xujichang.util.tool.ViewTool;
 
 /**
  * Des:最基础的Activity
@@ -52,15 +69,34 @@ public abstract class XBaseActivity extends AppCompatActivity implements IActivi
     private ViewStub.OnInflateListener inflateListener;
     private LinearLayout mRoot;
     private IDialog iDialog;
+    private ILoading iLoading;
+    private ViewTool mViewTool;
+    private IPermission iPermission;
+    private IToast iToast;
     //===================================View拦截================================================
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         super.setContentView(R.layout.activity_x_base);
+        initConfigurations();
+        patchView();
+    }
+
+    private void initConfigurations() {
         iActionBar = onObtainActionBar();
         iDialog = obtainDialog();
-        patchView();
+        iLoading = obtainLoading();
+        mViewTool = ViewTool.getInstance(this);
+        iPermission = obtainPermission();
+    }
+
+    private IPermission obtainPermission() {
+        return DefaultPermission.instance();
+    }
+
+    private ILoading obtainLoading() {
+        return MDLoading.instance();
     }
 
     protected IDialog obtainDialog() {
@@ -238,29 +274,26 @@ public abstract class XBaseActivity extends AppCompatActivity implements IActivi
     public void showError(String msg) {
         IDialogCallBack callback = new IDialogCallBack() {
             @Override
-            public void onClick(IDialog dialog, DialogWhich which) {
-                dialog.close();
+            public void onClick(Dialog dialog, DialogWhich which) {
+                dialog.dismiss();
             }
         };
         showError(msg, callback);
     }
 
     public void showError(String msg, IDialogCallBack callback) {
-        //如果有Dialog显示 先关闭
         showError(msg, null, callback);
     }
 
     public void showError(String msg, String neutral, IDialogCallBack
             callback) {
         iDialog.showError(msg, null, callback);
-        //如果有Dialog显示 先关闭
     }
 
     /**
      * 警告的提示
      */
     public void showWarning(String msg, IDialogCallBack callback) {
-        //如果有Dialog显示 先关闭
         iDialog.showWaining(msg, callback);
     }
 
@@ -291,41 +324,163 @@ public abstract class XBaseActivity extends AppCompatActivity implements IActivi
 
     //Loading
     ///有进度条
+
+    public void startProgress() {
+        startProgress((String) null);
+    }
+
+    public void startProgress(String msg) {
+        startProgress(msg, 0);
+    }
+
+    public void startProgress(String msg, int progress) {
+        startProgress(null, msg, progress);
+    }
+
+    public void startProgress(String title, String msg) {
+        startProgress(title, msg, 0);
+    }
+
+    public void startProgress(String title, String msg, int progress) {
+        showProcess(title, LoadingStatus.START, msg, progress);
+    }
+
+    public void showProcess(String title, LoadingStatus status, String msg, int progress) {
+        iLoading.showProgress(title, status, msg, progress);
+    }
+
+    public void stopProgress() {
+        startProgress(LoadingStatus.STOP);
+    }
+
+    private void startProgress(LoadingStatus status) {
+        showProcess(null, status, null, 0);
+    }
+
+
+    public void updateProcess(int process) {
+        showProcess(null, LoadingStatus.UPDATE, null, process);
+    }
+
     ///无需进度条
-    public void showLoading(String title, LoadingStatus status, String msg) {
-        if (status == LoadingStatus.START) {
-            closeDialog();
-            MaterialDialog.Builder builder = new MaterialDialog
-                    .Builder(UIGlobalUtil.getCurrentContext())
-                    .content(msg)
-                    .progress(true, 100);
-            if (!Strings.isNullOrEmpty(title)) {
-                builder.title(title);
-            }
-            reShowDialog();
-        } else if (status == LoadingStatus.STOP) {
-            closeDialog();
-        } else if (status == LoadingStatus.UPDATE) {
-            //更新
-        }
+
+    public void startLoading() {
+        startLoading(null);
+    }
+
+    public void startLoading(String msg) {
+        startLoading(null, msg);
     }
 
     public void startLoading(String title, String msg) {
         showLoading(title, LoadingStatus.START, msg);
     }
 
-    public void stopLoading() {
-        showLoading(null, LoadingStatus.STOP, null);
-
+    public void showLoading(String title, LoadingStatus status, String msg) {
+        iLoading.showLoading(title, status, msg);
     }
 
-    public void startDeterminateLoading() {
-
+    public void stopLoading() {
+        showLoading(null, LoadingStatus.STOP, null);
     }
 
     //=======================================权限处理===========================================
+
+    /**
+     * 执行某一操作的时候，检测权限
+     *
+     * @param pm
+     * @param callBack
+     */
+    public void workWithPermissionCheck(String pm, IPermissionCallBack callBack) {
+        workWithPermissionCheck(Collections.singletonList(pm), callBack);
+    }
+
+    public void workWithPermissionCheck(List<String> pms, IPermissionCallBack callBack) {
+        if (checkPermission(pms)) {
+            if (null != callBack) {
+                callBack.onGain();
+            }
+        } else {
+            if (!callBack.onDenied()) {
+                showWarning("因为未获得【" + StringUtil.connectStr(pms) + "】权限，不能执行该操作！");
+            }
+        }
+    }
+
+    /**
+     * 检测权限 并请求
+     *
+     * @param pms
+     * @param callBack
+     */
+    public void workWithPermissionRequest(List<String> pms, IPermissionCallBack callBack) {
+        if (checkPermission(pms)) {
+            if (null != callBack) {
+                callBack.onGain();
+            }
+        } else {
+            iPermission.requestPermission(pms, callBack);
+        }
+    }
+
+    public void requestPermission(List<String> pms) {
+        iPermission.requestPermission(pms);
+    }
+
+    private boolean checkPermission(List<String> pms) {
+        return iPermission.checkPermission(pms);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        boolean catched = iPermission.onPermissionsResult(requestCode, permissions, grantResults);
+        if (!catched) {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
+
+    public static abstract class SimplePermissionCallback implements IPermissionCallBack {
+        @Override
+        public boolean onDenied() {
+            return false;
+        }
+    }
     //=======================================双击退出===========================================
+
+    @Override
+    public void onBackPressed() {
+        if (hideKeyboard()) {
+            return;
+        }
+        if (GlobalUtil.isAppBaseActivity()) {
+            GlobalUtil.postExit(UIConfig.Time.EXIT_DURATION, new IExitCallBack() {
+                @Override
+                public void onExit() {
+                    onAppExit();
+                }
+
+                @Override
+                public boolean onTip() {
+                    return false;
+                }
+            });
+            return;
+        }
+        super.onBackPressed();
+    }
+
+    public void onAppExit() {
+
+    }
+
     //=======================================输入法弹出框===========================================
+
+    /**
+     * 隐藏输入法
+     *
+     * @return
+     */
     public boolean hideKeyboard() {
         boolean closed = false;
         InputMethodManager methodManager = (InputMethodManager) getSystemService(
@@ -341,8 +496,12 @@ public abstract class XBaseActivity extends AppCompatActivity implements IActivi
         return closed;
     }
 
+    /**
+     * @param dialog
+     * @return
+     */
     public boolean hideDialogKeyboard(MaterialDialog dialog) {
-        Context context = UIGlobalUtil.getCurrentContext();
+        Context context = GlobalUtil.getCurrentContext();
         if (null == context) {
             return false;
         }
@@ -360,6 +519,22 @@ public abstract class XBaseActivity extends AppCompatActivity implements IActivi
         }
         return true;
     }
+
     //=======================================防止点击事件抖动===========================================
 
+    /**
+     * @param view
+     * @param listener
+     * @param <T>
+     */
+    protected <T extends View> void proxyViewClick(T view, XOnClickListener<T> listener) {
+        if (null != mViewTool) {
+            mViewTool.proxyClickListener(view, listener);
+        }
+    }
+
+    //==========================================Toast=============================================
+    protected void toast(String msg) {
+        Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
+    }
 }

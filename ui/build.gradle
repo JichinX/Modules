@@ -3,10 +3,10 @@ android {
     defaultConfig {
         minSdkVersion min_version
         targetSdkVersion target_version
-        versionCode 1
-        versionName "1.0"
+        versionCode 102
+        versionName "1.0.2"
         multiDexEnabled true
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+//        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
     }
 
@@ -26,13 +26,12 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:27.1.1'
-//    implementation('com.afollestad.material-dialogs:core:2.0.0-alpha05') {
-//        exclude group: 'com.android.support'
-//    }
     implementation 'com.android.support:multidex:1.0.3'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-    implementation project(':base')
+    //    testImplementation 'junit:junit:4.12'
+    //    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    //    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    //    implementation project(':base')
+//    implementation project(':basic')
+    implementation 'me.xujichang.modules:basic:1.0.0'
 }
 apply from: '../base_upload.gradle'
