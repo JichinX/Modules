@@ -1,5 +1,6 @@
 package me.xujichang.web.base;
 
+import android.Manifest;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -20,12 +21,17 @@ import android.widget.ProgressBar;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.lzyzsd.jsbridge.BridgeWebView;
 import com.github.lzyzsd.jsbridge.CallBackFunction;
+import com.google.common.base.Strings;
+
+import java.net.URL;
+import java.net.URLDecoder;
 
 import me.xujichang.ui.activity.DefaultActionBarActivity;
 import me.xujichang.ui.activity.actionbar.ActionWhich;
 import me.xujichang.ui.utils.GlobalUtil;
 import me.xujichang.util.tool.LogTool;
 import me.xujichang.web.R;
+import me.xujichang.web.SystemOperate;
 import me.xujichang.web.WebDataParse;
 import me.xujichang.web.client.SelfWebChromeClient;
 import me.xujichang.web.client.SelfWebViewClient;
@@ -35,6 +41,7 @@ import me.xujichang.web.interfaces.IWebJsCallBack;
 import me.xujichang.web.interfaces.IWebLoading;
 import me.xujichang.web.interfaces.IWebParseData;
 import me.xujichang.web.loading.ProgressLoading;
+import me.xujichang.web.util.SmsUtil;
 
 /**
  * Des:
@@ -79,6 +86,7 @@ public abstract class BaseWebViewActivity extends DefaultActionBarActivity imple
         setContentView(R.layout.activity_base_web);
         initView();
         initWebView();
+        SmsUtil.getInstance().registerReceiver(getContext());
     }
 
     public void setParseData(IWebParseData parseData) {
@@ -355,5 +363,72 @@ public abstract class BaseWebViewActivity extends DefaultActionBarActivity imple
     @Deprecated
     protected void showWarningDialog(String msg, MaterialDialog.SingleButtonCallback callback) {
         showWarning(msg, GlobalUtil.convertCallBack(callback));
+    }
+
+    @Override
+    public boolean onSystemOperate(String url) {
+        if (Strings.isNullOrEmpty(url)) {
+            return false;
+        }
+        if (url.startsWith(SystemOperate.MAIL.getScheme())) {
+            return onMailTo(url);
+        } else if (url.startsWith(SystemOperate.SMS.getScheme())) {
+            return onSms(url);
+        } else if (url.startsWith(SystemOperate.TEL.getScheme())) {
+            return onTel(url);
+        }
+        return false;
+    }
+
+    /**
+     * 打电话
+     *
+     * @param url 格式 tel:10086
+     * @return
+     */
+    protected boolean onTel(final String url) {
+        workWithPermissionCheck(Manifest.permission.CALL_PHONE, new SimplePermissionCallback() {
+            @Override
+            public void onGain() {
+                Intent intent = new Intent(Intent.ACTION_DIAL);
+                Uri data = Uri.parse(url);
+                intent.setData(data);
+                startActivity(intent);
+            }
+        });
+        return true;
+    }
+
+    /**
+     * 发短信
+     *
+     * @param url 格式 sms:10086,10010,10000?body=sadadsad阿打算打的实打实大的宣传
+     * @return
+     */
+    protected boolean onSms(String url) {
+        final String realUrl = URLDecoder.decode(url);
+        workWithPermissionCheck(Manifest.permission.SEND_SMS, new SimplePermissionCallback() {
+            @Override
+            public void onGain() {
+                SmsUtil.getInstance().sendMessages(getContext(), realUrl);
+            }
+        });
+        return true;
+    }
+
+    /**
+     * 发邮件
+     *
+     * @param url
+     * @return
+     */
+    protected boolean onMailTo(String url) {
+        return false;
+    }
+
+    @Override
+    protected void onDestroy() {
+        SmsUtil.getInstance().unregisterReceiver(getContext());
+        super.onDestroy();
     }
 }

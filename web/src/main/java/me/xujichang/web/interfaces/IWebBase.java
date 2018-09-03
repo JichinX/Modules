@@ -14,7 +14,7 @@ import android.webkit.WebView;
  * Des:
  *
  * @author xjc
- *         Created on 2017/11/26 10:52.
+ * Created on 2017/11/26 10:52.
  */
 
 public interface IWebBase {
@@ -132,4 +132,13 @@ public interface IWebBase {
      * @param contentLength
      */
     void onDownLoadStart(String url, String userAgent, String contentDisposition, String mimetype, long contentLength);
+
+    /**
+     * 匹配 是否是需要系统的程序
+     * 这里主要是指 电话 短信 mail
+     *
+     * @param url
+     * @return
+     */
+    boolean onSystemOperate(String url);
 }

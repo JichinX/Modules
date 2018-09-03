@@ -5,11 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.support.media.ExifInterface;
 import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-
-
 import com.codvision.check.data.DataType;
 import com.github.lzyzsd.jsbridge.CallBackFunction;
 import com.google.gson.Gson;
@@ -41,6 +40,8 @@ public class PictureForWeb {
     private File storeDir;
     private static boolean justCamera = false;
     private File cachedPhotoFile;
+    private boolean needExifInfo = false;
+    private ExifInterface cachedExif = null;
 
     public static PictureForWeb getInstance() {
         if (null == instance) {
@@ -137,26 +138,43 @@ public class PictureForWeb {
                     srcFile = new File(path);
                 }
             }
+            //File 为null
             if (null == srcFile) {
                 sFunction.onCallBack(DataType.createErrorRespData(WebConst.StatusCode.STATUS_NATIVE_ERROR, "获取图片路径,失败"));
-            } else {
-                if (Files.getFileSizeFormatM(srcFile) > 1) {
-                    File destFile = null;
-                    try {
-                        destFile = new Compressor(mContext).setDestinationDirectoryPath(storeDir.getAbsolutePath()).compressToFile(srcFile);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    if (null == destFile) {
-                        sFunction.onCallBack(DataType.createErrorRespData(WebConst.StatusCode.STATUS_NATIVE_ERROR, "获取相册路径,失败"));
-                    } else {
-                        path = destFile.getAbsolutePath();
-                        sFunction.onCallBack(DataType.createRespData(WebConst.StatusCode.STATUS_OK, "成功获取相册路径", path));
-                    }
-                } else {
-                    path = srcFile.getAbsolutePath();
-                    sFunction.onCallBack(DataType.createRespData(WebConst.StatusCode.STATUS_OK, "成功获取相册路径", path));
+                return true;
+            }
+            path = srcFile.getAbsolutePath();
+            //Exif信息
+            try {
+                cachedExif = new ExifInterface(path);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            //压缩
+            if (Files.getFileSizeFormatM(srcFile) > 1) {
+                //图片大小大于1M,进行压缩
+                File destFile = null;
+                try {
+                    destFile = new Compressor(mContext).setDestinationDirectoryPath(storeDir.getAbsolutePath()).compressToFile(srcFile);
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
+                if (null == destFile) {
+                    sFunction.onCallBack(DataType.createErrorRespData(WebConst.StatusCode.STATUS_NATIVE_ERROR, "获取相册路径,失败"));
+                    return true;
+                } else {
+                    path = destFile.getAbsolutePath();
+                }
+            }
+            if (needExifInfo) {
+                double[] latlng = cachedExif.getLatLong();
+                if (null == latlng) {
+                    latlng = new double[]{0, 0};
+                }
+                String result = path + ";" + latlng[0] + ";" + latlng[1];
+                sFunction.onCallBack(DataType.createRespData(WebConst.StatusCode.STATUS_OK, "成功获取图片路径和信息", result));
+            } else {
+                sFunction.onCallBack(DataType.createRespData(WebConst.StatusCode.STATUS_OK, "成功获取图片路径", path));
             }
             return true;
         }
@@ -167,12 +185,23 @@ public class PictureForWeb {
         return new File(storeDir, "picture_" + System.currentTimeMillis() + ".jpg");
     }
 
+    /**
+     * 是否仅启用Camera
+     *
+     * @param just
+     * @return
+     */
     public PictureForWeb justCamera(boolean just) {
         justCamera = just;
         return instance;
     }
 
+    public PictureForWeb withExif(boolean exif) {
+        needExifInfo = exif;
+        return instance;
+    }
+
     private static class ClassHolder {
-        public static PictureForWeb instance = new PictureForWeb();
+        private static PictureForWeb instance = new PictureForWeb();
     }
 }

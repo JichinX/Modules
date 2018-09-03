@@ -29,7 +29,7 @@ import me.xujichang.web.interfaces.IWebBase;
  * Des:
  *
  * @author xjc
- *         Created on 2017/11/26 10:32.
+ * Created on 2017/11/26 10:32.
  */
 
 public class SelfWebViewClient extends BridgeWebViewClient {
@@ -60,7 +60,7 @@ public class SelfWebViewClient extends BridgeWebViewClient {
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, String url) {
         LogTool.d("url:" + url);
-        return super.shouldOverrideUrlLoading(view, url);
+        return mWebBase.onSystemOperate(url) || super.shouldOverrideUrlLoading(view, url);
     }
 
     @Override
@@ -85,13 +85,23 @@ public class SelfWebViewClient extends BridgeWebViewClient {
 
     @Override
     public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
-        return getResource(url);
+        WebResourceResponse response = getResource(url);
+        if (null == response) {
+            return super.shouldInterceptRequest(view, url);
+        } else {
+            return response;
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
-        return getResource(request);
+        WebResourceResponse response = getResource(request);
+        if (null == response) {
+            return super.shouldInterceptRequest(view, request);
+        } else {
+            return response;
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -117,9 +127,6 @@ public class SelfWebViewClient extends BridgeWebViewClient {
         } else if (NATIVE_AUDIO.toLowerCase().equals(scheme)) {
             mimetype = "audio/*";
         } else {
-            mimetype = "file/*";
-        }
-        if (TextUtils.isEmpty(mimetype)) {
             return null;
         }
         try {

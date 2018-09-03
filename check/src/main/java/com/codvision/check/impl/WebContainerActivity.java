@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
+import com.codvision.check.fun.PictureForWeb;
 import com.codvision.check.handler.CheckHandler;
 import com.codvision.check.data.DataType;
 import com.codvision.check.fun.QRForWeb;
@@ -54,6 +55,23 @@ public class WebContainerActivity extends DefaultWebViewActivity {
             case CheckHandler.REQUEST_QR:
                 //二维码扫描
                 QRForWeb.withContext(this).withFunction(function).withData(data).execute();
+                break;
+            case CheckHandler.REQUEST_IMG_EXT:
+                PictureForWeb.getInstance()
+                        .withFunction(function)
+                        .withOptions(data)
+                        .withContext(this)
+                        .withExif(true)
+                        .execute();
+                break;
+            case CheckHandler.REQUEST_CAMERA_EXT:
+                PictureForWeb.getInstance()
+                        .justCamera(true)
+                        .withFunction(function)
+                        .withOptions(data)
+                        .withContext(this)
+                        .withExif(true)
+                        .execute();
                 break;
             default:
                 super.onJsCallBack(type, data, function);
