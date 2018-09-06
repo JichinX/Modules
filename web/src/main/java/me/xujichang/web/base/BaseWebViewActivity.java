@@ -79,6 +79,7 @@ public abstract class BaseWebViewActivity extends DefaultActionBarActivity imple
      * 对默认操作的数据 进行解析
      */
     private IWebParseData mParseData;
+    private SmsUtil smsUtil;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -86,7 +87,8 @@ public abstract class BaseWebViewActivity extends DefaultActionBarActivity imple
         setContentView(R.layout.activity_base_web);
         initView();
         initWebView();
-        SmsUtil.getInstance().registerReceiver(getContext());
+        smsUtil = SmsUtil.getInstance();
+        smsUtil.registerReceiver(getContext());
     }
 
     public void setParseData(IWebParseData parseData) {
@@ -428,7 +430,7 @@ public abstract class BaseWebViewActivity extends DefaultActionBarActivity imple
 
     @Override
     protected void onDestroy() {
-        SmsUtil.getInstance().unregisterReceiver(getContext());
+        smsUtil.unregisterReceiver(getContext());
         super.onDestroy();
     }
 }

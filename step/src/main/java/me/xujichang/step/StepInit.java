@@ -2,8 +2,8 @@ package me.xujichang.step;
 
 import android.app.Application;
 
-import com.codvision.base.ext.IBaseInit;
 
+import me.xujichang.basic.IBaseInit;
 import me.xujichang.step.center.StepCenter;
 
 /**

@@ -2,9 +2,9 @@ package me.xujichang.step.test;
 
 import android.app.Application;
 
-import com.codvision.base.BaseConst;
-import com.codvision.base.utils.InitUtil;
 
+import me.xujichang.basic.BaseConst;
+import me.xujichang.basic.util.InitUtil;
 import me.xujichang.step.StepConst;
 
 /**

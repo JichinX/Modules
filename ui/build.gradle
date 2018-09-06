@@ -3,8 +3,8 @@ android {
     defaultConfig {
         minSdkVersion min_version
         targetSdkVersion target_version
-        versionCode 102
-        versionName "1.0.2"
+        versionCode 103
+        versionName "1.0.3"
         multiDexEnabled true
 //        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
@@ -31,7 +31,7 @@ dependencies {
     //    androidTestImplementation 'com.android.support.test:runner:1.0.2'
     //    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     //    implementation project(':base')
-//    implementation project(':basic')
-    implementation 'me.xujichang.modules:basic:1.0.0'
+    implementation project(':basic')
+//    implementation 'me.xujichang.modules:basic:1.0.2'
 }
 apply from: '../base_upload.gradle'

@@ -2,7 +2,8 @@ package com.codvision.vpn;
 
 import android.app.Application;
 
-import com.codvision.base.ext.IBaseInit;
+import me.xujichang.basic.IBaseInit;
+
 
 /**
  * Project: Platform

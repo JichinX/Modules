@@ -47,7 +47,7 @@ public class GlobalUtil implements Application.ActivityLifecycleCallbacks {
 
     @Override
     public void onActivityStarted(Activity activity) {
-
+        currentContext = new WeakReference<>(activity);
     }
 
     @Override
@@ -77,7 +77,6 @@ public class GlobalUtil implements Application.ActivityLifecycleCallbacks {
 
     public static void init(Application application) {
         application.registerActivityLifecycleCallbacks(instance());
-
     }
 
     private static GlobalUtil instance() {

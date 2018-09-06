@@ -37,7 +37,7 @@ public class SmsUtil {
     }
 
     public static SmsUtil getInstance() {
-        return Holder.instance;
+        return new SmsUtil();
     }
 
     public static ArrayList<String> getMessages(String url) {

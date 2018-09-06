@@ -4,8 +4,8 @@ android {
     defaultConfig {
         minSdkVersion min_version
         targetSdkVersion target_version
-        versionCode 103
-        versionName "1.0.3"
+        versionCode 104
+        versionName "1.0.4"
     }
 
     buildTypes {
@@ -38,7 +38,7 @@ android {
 dependencies {
     api fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:27.1.1'
-    implementation 'me.xujichang.modules:base:1.0.4'
+    implementation 'me.xujichang.modules:basic:1.0.2'
 }
 
 

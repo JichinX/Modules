@@ -1,14 +1,19 @@
 package me.xujichang.ui.activity;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.provider.Settings;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -26,8 +31,12 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import me.xujichang.ui.R;
 import me.xujichang.ui.UIConfig;
@@ -42,6 +51,7 @@ import me.xujichang.ui.activity.dialog.MDDialog;
 import me.xujichang.ui.activity.loading.ILoading;
 import me.xujichang.ui.activity.loading.LoadingStatus;
 import me.xujichang.ui.activity.loading.MDLoading;
+import me.xujichang.ui.activity.toast.DefaultToast;
 import me.xujichang.ui.activity.toast.IToast;
 import me.xujichang.ui.promission.DefaultPermission;
 import me.xujichang.ui.promission.IPermission;
@@ -84,24 +94,21 @@ public abstract class XBaseActivity extends AppCompatActivity implements IActivi
     }
 
     private void initConfigurations() {
+        mViewTool = ViewTool.getInstance(this);
         iActionBar = onObtainActionBar();
         iDialog = obtainDialog();
         iLoading = obtainLoading();
-        mViewTool = ViewTool.getInstance(this);
         iPermission = obtainPermission();
+        iToast = obtainToast();
     }
 
-    private IPermission obtainPermission() {
-        return DefaultPermission.instance();
-    }
+    protected abstract IToast obtainToast();
 
-    private ILoading obtainLoading() {
-        return MDLoading.instance();
-    }
+    protected abstract IPermission obtainPermission();
 
-    protected IDialog obtainDialog() {
-        return MDDialog.instance();
-    }
+    protected abstract ILoading obtainLoading();
+
+    protected abstract IDialog obtainDialog();
 
     @Override
     public void setContentView(View view) {
@@ -134,9 +141,7 @@ public abstract class XBaseActivity extends AppCompatActivity implements IActivi
         iActionBar.setActionClick(this);
     }
 
-    protected IActionBar onObtainActionBar() {
-        return new DefaultActionBar();
-    }
+    protected abstract IActionBar onObtainActionBar();
 
     /**
      * 对StatusBar做处理 默认提取ActionBar的颜色
@@ -241,7 +246,14 @@ public abstract class XBaseActivity extends AppCompatActivity implements IActivi
 
     @Override
     public void onClick(ActionWhich which, int flag) {
+        if (onClickWithFlag(flag)) {
+            return;
+        }
+        onClick(which);
+    }
 
+    protected boolean onClickWithFlag(int flag) {
+        return false;
     }
 
     public void hideActionBar() {
@@ -384,6 +396,10 @@ public abstract class XBaseActivity extends AppCompatActivity implements IActivi
         showLoading(null, LoadingStatus.STOP, null);
     }
 
+    //Toast
+    protected void showToast(String msg) {
+        iToast.showToast(msg);
+    }
     //=======================================权限处理===========================================
 
     /**
@@ -428,8 +444,13 @@ public abstract class XBaseActivity extends AppCompatActivity implements IActivi
         iPermission.requestPermission(pms);
     }
 
-    private boolean checkPermission(List<String> pms) {
+    protected boolean checkPermission(List<String> pms) {
         return iPermission.checkPermission(pms);
+    }
+
+    @Deprecated
+    protected boolean checkPermission(String pm) {
+        return checkPermission(Collections.singletonList(pm));
     }
 
     @Override
@@ -520,7 +541,7 @@ public abstract class XBaseActivity extends AppCompatActivity implements IActivi
         return true;
     }
 
-    //=======================================防止点击事件抖动===========================================
+    //=======================================防止点击事件抖动=========================================
 
     /**
      * @param view
@@ -535,6 +556,74 @@ public abstract class XBaseActivity extends AppCompatActivity implements IActivi
 
     //==========================================Toast=============================================
     protected void toast(String msg) {
-        Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
+        iToast.showToast(msg);
     }
+    //===================================其他方法==================================================
+
+    /**
+     * 进入应用对应的设置界面
+     */
+    protected void toAppSettingInfo() {
+        //查看设置
+        Uri packageURI = Uri.parse("package:" + getPackageName());
+        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, packageURI);
+        startActivity(intent);
+    }
+
+    //===================================跳转=====================================================
+
+    /**
+     * @param aclass
+     */
+    protected void toActivity(Class<? extends Activity> aclass) {
+        toIntent(new Intent(getContext(), aclass));
+    }
+
+    protected void toActivity(Class<? extends Activity> aclass, Map<String, String> params) {
+        Intent intent = new Intent(getContext(), aclass);
+        if (null != params) {
+            for (String key : params.keySet()) {
+                intent.putExtra(key, params.get(key));
+            }
+        }
+        toIntent(intent);
+    }
+
+    protected void toIntent(Intent intent) {
+        startActivity(intent);
+    }
+
+    //===================================兼容===================================================
+    @Deprecated
+    protected void showWarningDialog(String msg, MaterialDialog.SingleButtonCallback callback) {
+        showWarning(msg, GlobalUtil.convertCallBack(callback));
+    }
+
+    @Deprecated
+    protected void showWarningDialog(String msg) {
+        showWarning(msg);
+    }
+
+    @Deprecated
+    protected void showToast(String msg, int type) {
+        showToast(msg);
+    }
+
+    @Deprecated
+    protected void showErrorDialog(String msg) {
+        showError(msg);
+    }
+
+    @Deprecated
+    protected String[] checkPermissions(String[] permissions) {
+        ArrayList<String> arrayList = new ArrayList<>(Arrays.asList(permissions));
+        Iterator<String> iterator = arrayList.iterator();
+        while (iterator.hasNext()) {
+            if (checkPermission(iterator.next())) {
+                iterator.remove();
+            }
+        }
+        return arrayList.toArray(new String[]{});
+    }
+
 }

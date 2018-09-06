@@ -1,6 +1,7 @@
 package me.xujichang.step;
 
-import com.codvision.base.BaseInit;
+
+import me.xujichang.basic.BaseInit;
 
 public class StepConst {
 

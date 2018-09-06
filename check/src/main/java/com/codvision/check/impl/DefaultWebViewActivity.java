@@ -208,7 +208,7 @@ public class DefaultWebViewActivity extends BaseWebViewActivity {
                 if (data.startsWith("http")) {
                     Uri uri = Uri.parse(data);
                     Intent intent = new Intent();
-                    intent.setClass(DefaultWebViewActivity.this, DefaultWebViewActivity.class);
+                    intent.setClass(getContext(), getClass());
                     intent.putExtra(WebConst.FLAG.WEB_URL, uri.toString());
                     startActivity(intent);
                 } else {
