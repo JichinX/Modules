@@ -7,7 +7,6 @@
 
     <EditText
         android:id="@+id/et_url"
-        android:text="http://192.168.1.105:8848/inspection/index.html?category=20000"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/padding_8dp" />

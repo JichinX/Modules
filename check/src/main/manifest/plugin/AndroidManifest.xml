@@ -24,5 +24,6 @@
         <activity
             android:name=".impl.WebContainerActivity"
             android:theme="@style/NoActionBarTheme" />
+        <activity android:name=".activity.QrCodeActivity" />
     </application>
 </manifest>

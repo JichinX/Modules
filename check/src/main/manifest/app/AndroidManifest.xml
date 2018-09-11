@@ -37,6 +37,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".impl.WebContainerActivity" />
+        <activity android:name=".activity.QrCodeActivity" />
 
         <!--<service android:name=".services.UploadLocationService" />-->
 

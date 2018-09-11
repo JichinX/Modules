@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 
 import com.codvision.check.fun.PictureForWeb;
+import com.codvision.check.fun.QrcodeForWeb;
+import com.codvision.check.fun.RecordForWeb;
 import com.codvision.check.handler.CheckHandler;
 import com.codvision.check.data.DataType;
 import com.codvision.check.fun.QRForWeb;
@@ -12,6 +14,7 @@ import com.github.lzyzsd.jsbridge.CallBackFunction;
 import com.google.common.base.Strings;
 
 import me.xujichang.web.WebConst;
+import me.xujichang.web.handler.InformationHandler;
 import me.xujichang.web.interfaces.IWebJsCallBack;
 
 /**
@@ -73,6 +76,13 @@ public class WebContainerActivity extends DefaultWebViewActivity {
                         .withExif(true)
                         .execute();
                 break;
+            case InformationHandler.QRCODE:
+                QrcodeForWeb.getInstance().withContext(this).withFunction(function).execute();
+                break;
+            case InformationHandler.CALLBACK_RECORD:
+                RecordForWeb.getInstance(function)
+                        .withOptions(data);
+                break;
             default:
                 super.onJsCallBack(type, data, function);
                 break;
@@ -83,6 +93,7 @@ public class WebContainerActivity extends DefaultWebViewActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         boolean catched = false;
         catched = QRForWeb.onActivityResult(requestCode, resultCode, data);
+        catched = QrcodeForWeb.getInstance().onActivityResult(requestCode, resultCode, data);
         if (!catched) {
             super.onActivityResult(requestCode, resultCode, data);
         }

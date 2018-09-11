@@ -22,7 +22,7 @@
 >                   show(responseData);
 >                   });
 > ```
-
+> 
 > 返回的数据格式均以以下方式包裹，以下文档只显示，data部分
 > 
 > ```json
@@ -43,6 +43,7 @@
    | name | location        | --  |                                            |
    | data | true/false/null | --  | true表示在未获取到地址的情况下吗，等待获取到位置信息再返回结果，默认为false |
    | json | --              |     | --                                         |
+
 2. 打开相机
 
    打开相机现在扩展为两个，一个是只获取照片路径，另一个获取照片携带的Exif信息
@@ -58,6 +59,7 @@
    | name | camera_ext | --                                                                                                                       |
    | data | --         | --                                                                                                                       |
    | json | --         | /data/user/0/com.codvision.check/files/DLD_20180903_163444_2586436440059892000.jpg;30.400189972222222;120.27969797222222 |
+
 3. 录音
 
    |      | 值      | 参考                                                                                 |
@@ -65,6 +67,7 @@
    | name | record | --                                                                                 |
    | data | --     | --                                                                                 |
    | json | --     | /data/user/0/com.codvision.check/files/DLD_20180903_163444_2586436440059892000.aac |
+
 4. 获取图片
 
    |      | 值       | 参考                                                                                 |
@@ -78,6 +81,7 @@
    | name | picture_ext | --                                                                                                                       |
    | data | --          | --                                                                                                                       |
    | json | --          | /data/user/0/com.codvision.check/files/DLD_20180903_163444_2586436440059892000.jpg;30.400189972222222;120.27969797222222 |
+
 5. 文件上传
 
    |      | 值        | 参考  |
@@ -91,6 +95,7 @@
    | name | upload_new | --  |
    | data | String数组   |     |
    | json | --         |     |
+
 6. 跳转
 
    |      | 值          | 参考  |
@@ -98,6 +103,7 @@
    | name | "openLink" | --  |
    | data | String     | --  |
    | json | --         |     |
+
 7. 二维码扫描
 
    |      | 值      | 参考  |
@@ -128,7 +134,6 @@
        }
    ```
 
-   
 8. 地图导航
 
    |      | 值          | 参考                |
@@ -136,6 +141,7 @@
    | name | nav        | --                |
    | data | JsonObject | {lat:0.0,lng:0.0} |
    | json | --         | --                |
+
 9. 返回上一页
 
    |      | 值    | 参考  |
@@ -143,6 +149,7 @@
    | name | back | --  |
    | data | --   | --  |
    | json | --   | --  |
+
 10. 退出容器
 
     |      | 值    | 参考  |
@@ -166,12 +173,12 @@ NativeAudio:// [路径]
 
 **2.短信、电话**
 
-> 对短信、电话的响应是解析通用的格式，并未单独做协议定义。可参考 https://www.cnblogs.com/liuhongfeng/p/4976599.html
+> 对短信、电话的响应是解析通用的格式，并未单独做协议定义。可参考 [https://www.cnblogs.com/liuhongfeng/p/4976599.html](https://www.cnblogs.com/liuhongfeng/p/4976599.html)
 > 
 > 如对现有实现不满意，可在继承的WebViewActivity内重写对应的处理方法
 > 
 > ```java
->    	/**
+>        /**
 >      * 打电话
 >      *
 >      * @param url 格式 tel:10086
@@ -200,12 +207,9 @@ NativeAudio:// [路径]
 >     protected boolean onMailTo(String url) {
 >         return false;
 >     }
-> 
 > ```
 
 ```html
 <a href="tel:10086">拨打 10086</a>
 <a href="sms:10086,10010?body=ceshi">短信10086</a>
 ```
-
-

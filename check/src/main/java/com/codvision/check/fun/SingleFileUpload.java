@@ -2,6 +2,7 @@ package com.codvision.check.fun;
 
 
 import com.codvision.check.CheckConst;
+import com.codvision.check.CheckInit;
 import com.codvision.check.api.CommonApi;
 import com.codvision.check.data.DataType;
 import com.github.lzyzsd.jsbridge.CallBackFunction;
@@ -79,7 +80,7 @@ public class SingleFileUpload {
         RetrofitManager
                 .getOurInstance()
                 .createReq(CommonApi.class)
-                .uploadSingleFile(CheckConst.PHOTO_UPLOAD_PATH, Files.fileToMultipartBodyPart(file))
+                .uploadSingleFile(CheckInit.PHOTO_UPLOAD_PATH, Files.fileToMultipartBodyPart(file))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(observer);

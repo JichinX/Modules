@@ -89,6 +89,7 @@ public final class RetrofitCenter {
         if (retrofit == null) {
             init(baseUrl);
         }
+        retrofit = RETROFIT_MAP.get(baseUrl);
         return retrofit;
     }
 
@@ -145,10 +146,12 @@ public final class RetrofitCenter {
      * 根据给与的config创建client
      *
      * @param clientConfig
-     * @return
+     * @retur：
      */
     private static OkHttpClient createHttpClient(ClientConfig clientConfig) {
-
+        if (null == clientConfig) {
+            clientConfig = new ClientConfig.Builder().build();
+        }
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
 
         //连接超时 时间

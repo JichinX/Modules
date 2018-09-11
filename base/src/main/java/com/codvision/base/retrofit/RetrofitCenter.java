@@ -89,6 +89,7 @@ public final class RetrofitCenter {
         if (retrofit == null) {
             init(baseUrl);
         }
+        retrofit = RETROFIT_MAP.get(baseUrl);
         return retrofit;
     }
 

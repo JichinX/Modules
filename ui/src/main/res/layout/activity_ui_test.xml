@@ -67,4 +67,23 @@
             android:onClick="onFile"
             android:text="File" />
     </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="enableMark"
+            android:text="enable Mark" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="disableMark"
+            android:text="disable Mark" />
+    </LinearLayout>
 </LinearLayout>

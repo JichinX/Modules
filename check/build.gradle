@@ -39,6 +39,8 @@ dependencies {
     implementation 'me.xujichang.modules:basic:1.0.2'
     //    implementation project(':ui')
     implementation 'me.xujichang.modules:ui:1.0.3'
+    implementation 'com.mylhyl:zxingscanner:1.6.0'
+
     implementation 'com.android.support:exifinterface:27.1.1'
 }
 apply from: '../base_upload.gradle'

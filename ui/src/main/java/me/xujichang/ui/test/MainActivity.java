@@ -79,6 +79,7 @@ public class MainActivity extends DefaultActionBarActivity {
     }
 
     public void onProcess(View view) {
+
         startProgress("图片缓存..", "上传中...");
         new Thread(new ProcessRunnable()).start();
     }
@@ -106,6 +107,14 @@ public class MainActivity extends DefaultActionBarActivity {
                 toast("权限已获得");
             }
         });
+    }
+
+    public void disableMark(View view) {
+        disableWaterMark();
+    }
+
+    public void enableMark(View view) {
+        enableWaterMark("许继昌 测试");
     }
 
     private class ProcessRunnable implements Runnable {

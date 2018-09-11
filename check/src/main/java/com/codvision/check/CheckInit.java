@@ -6,6 +6,7 @@ import android.location.Location;
 import com.codvision.check.api.CommonApi;
 import com.codvision.check.bean.LocationUpload;
 
+import java.io.File;
 import java.util.Date;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -30,7 +31,13 @@ import me.xujichang.util.tool.LogTool;
  */
 public class CheckInit implements IBaseInit {
     public static final String INIT_TAG = "com.codvision.check.CheckInit";
+    public static String TOKEN_KEY = "token";
+    public static String LOCATION_UPLOAD_TYPE = "8000010";
+    public static String LOCATION_UPLOAD_PATH = "";
+    public static String PHOTO_UPLOAD_PATH = "";
+
     public static Location location;
+    public static File cacheFile;
     private Location lastUploadLocation;
     private long lastUploadTime = 0;
     private static int wzsbqssj = 0;
@@ -41,6 +48,7 @@ public class CheckInit implements IBaseInit {
     @Override
     public boolean onInitSpeed(Application application) {
 //        BaseConst.enablePacketService = false;
+        cacheFile = application.getExternalFilesDir(null);
         Task uploadTask = new Task();
         uploadTask.setRunnable(new UploadLocationRunnable());
         TaskCenter.push(uploadTask);
@@ -109,10 +117,10 @@ public class CheckInit implements IBaseInit {
         locationUpload.setKey(DeviceUtils.getAndroidID());
         locationUpload.setLat(location.getLatitude());
         locationUpload.setLng(location.getLongitude());
-        locationUpload.setType(CheckConst.LOCATION_UPLOAD_TYPE);
+        locationUpload.setType(CheckInit.LOCATION_UPLOAD_TYPE);
         RetrofitManager.getOurInstance()
                 .createReq(CommonApi.class)
-                .uploadGps(CheckConst.LOCATION_UPLOAD_PATH, locationUpload)
+                .uploadGps(CheckInit.LOCATION_UPLOAD_PATH, locationUpload)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(observer);
