@@ -1,17 +1,22 @@
 package com.codvision.check.impl;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
+import com.codvision.check.data.DataType;
 import com.codvision.check.fun.PictureForWeb;
+import com.codvision.check.fun.QRForWeb;
 import com.codvision.check.fun.QrcodeForWeb;
 import com.codvision.check.fun.RecordForWeb;
 import com.codvision.check.handler.CheckHandler;
-import com.codvision.check.data.DataType;
-import com.codvision.check.fun.QRForWeb;
+import com.codvision.check.permission.WebPermissionCallback;
 import com.github.lzyzsd.jsbridge.CallBackFunction;
 import com.google.common.base.Strings;
+
+import java.util.Arrays;
 
 import me.xujichang.web.WebConst;
 import me.xujichang.web.handler.InformationHandler;
@@ -57,31 +62,56 @@ public class WebContainerActivity extends DefaultWebViewActivity {
                 break;
             case CheckHandler.REQUEST_QR:
                 //二维码扫描
-                QRForWeb.withContext(this).withFunction(function).withData(data).execute();
+                workWithPermissionCheck(Manifest.permission.CAMERA, new WebPermissionCallback(function) {
+                    @Override
+                    public void onGain() {
+                        QRForWeb.withContext(getActivity()).withFunction(function).withData(data).execute();
+                    }
+                });
                 break;
             case CheckHandler.REQUEST_IMG_EXT:
-                PictureForWeb.getInstance()
-                        .withFunction(function)
-                        .withOptions(data)
-                        .withContext(this)
-                        .withExif(true)
-                        .execute();
+                workWithPermissionCheck(Arrays.asList(Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE), new WebPermissionCallback(function) {
+                    @Override
+                    public void onGain() {
+                        PictureForWeb.getInstance()
+                                .withFunction(function)
+                                .withOptions(data)
+                                .withContext(getActivity())
+                                .withExif(true)
+                                .execute();
+                    }
+                });
                 break;
             case CheckHandler.REQUEST_CAMERA_EXT:
-                PictureForWeb.getInstance()
-                        .justCamera(true)
-                        .withFunction(function)
-                        .withOptions(data)
-                        .withContext(this)
-                        .withExif(true)
-                        .execute();
+                workWithPermissionCheck(Arrays.asList(Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE), new WebPermissionCallback(function) {
+                    @Override
+                    public void onGain() {
+                        PictureForWeb.getInstance()
+                                .justCamera(true)
+                                .withFunction(function)
+                                .withOptions(data)
+                                .withContext(getActivity())
+                                .withExif(true)
+                                .execute();
+                    }
+                });
                 break;
             case InformationHandler.QRCODE:
-                QrcodeForWeb.getInstance().withContext(this).withFunction(function).execute();
+                workWithPermissionCheck(Manifest.permission.CAMERA, new WebPermissionCallback(function) {
+                    @Override
+                    public void onGain() {
+                        QrcodeForWeb.getInstance().withContext(getActivity()).withFunction(function).execute();
+                    }
+                });
                 break;
             case InformationHandler.CALLBACK_RECORD:
-                RecordForWeb.getInstance(function)
-                        .withOptions(data);
+                workWithPermissionCheck(Manifest.permission.RECORD_AUDIO, new WebPermissionCallback(function) {
+                    @Override
+                    public void onGain() {
+                        RecordForWeb.getInstance(function)
+                                .withOptions(data);
+                    }
+                });
                 break;
             default:
                 super.onJsCallBack(type, data, function);
@@ -98,4 +128,5 @@ public class WebContainerActivity extends DefaultWebViewActivity {
             super.onActivityResult(requestCode, resultCode, data);
         }
     }
+
 }

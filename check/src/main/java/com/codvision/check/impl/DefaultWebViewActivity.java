@@ -1,5 +1,7 @@
 package com.codvision.check.impl;
 
+import android.Manifest;
+import android.app.Activity;
 import android.arch.lifecycle.Lifecycle;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -26,10 +28,13 @@ import com.codvision.check.fun.LocationForWeb;
 import com.codvision.check.fun.NavForWeb;
 import com.codvision.check.fun.PictureForWeb;
 import com.codvision.check.handler.InformationHandler;
+import com.codvision.check.permission.WebPermissionCallback;
 import com.github.lzyzsd.jsbridge.CallBackFunction;
 import com.google.common.base.Strings;
 
 import org.json.JSONObject;
+
+import java.util.Arrays;
 
 import me.xujichang.util.tool.LogTool;
 import me.xujichang.web.WebConst;
@@ -143,26 +148,42 @@ public class DefaultWebViewActivity extends BaseWebViewActivity {
         switch (type) {
             case InformationHandler.CALLBACK_LOCATION:
                 //调用定位
-                LocationForWeb.getInstance(function)
-                        .withContext(this)
-                        .withOptions(data);
+                workWithPermissionCheck(Arrays.asList(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION), new WebPermissionCallback(function) {
+                    @Override
+                    public void onGain() {
+                        LocationForWeb.getInstance(function)
+                                .withContext(getActivity())
+                                .withOptions(data);
+                    }
+                });
+
                 break;
             case InformationHandler.CALLBACK_CAMERA:
                 //相机
-                PictureForWeb.getInstance()
-                        .justCamera(true)
-                        .withFunction(function)
-                        .withOptions(data)
-                        .withContext(this)
-                        .execute();
+                workWithPermissionCheck(Manifest.permission.CAMERA, new WebPermissionCallback(function) {
+                    @Override
+                    public void onGain() {
+                        PictureForWeb.getInstance()
+                                .justCamera(true)
+                                .withFunction(function)
+                                .withOptions(data)
+                                .withContext(getActivity())
+                                .execute();
+                    }
+                });
                 break;
             case InformationHandler.CALLBACK_PICTURE:
                 //选择图片
-                PictureForWeb.getInstance()
-                        .withFunction(function)
-                        .withOptions(data)
-                        .withContext(this)
-                        .execute();
+                workWithPermissionCheck(Arrays.asList(Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE), new WebPermissionCallback(function) {
+                    @Override
+                    public void onGain() {
+                        PictureForWeb.getInstance()
+                                .withFunction(function)
+                                .withOptions(data)
+                                .withContext(getActivity())
+                                .execute();
+                    }
+                });
                 break;
             case InformationHandler.CALLBACK_USERID:
                 String unionid = "";
@@ -175,12 +196,22 @@ public class DefaultWebViewActivity extends BaseWebViewActivity {
                 function.onCallBack(response);
                 break;
             case InformationHandler.CALLBACK_UPLOAD:
-                //上传文件
-                new FilesUploadForWeb().uploadFiles(data, function);
+                workWithPermissionCheck(Manifest.permission.WRITE_EXTERNAL_STORAGE, new WebPermissionCallback(function) {
+                    @Override
+                    public void onGain() {
+                        //上传文件
+                        new FilesUploadForWeb().uploadFiles(data, function);
+                    }
+                });
                 break;
             case InformationHandler.CALLBACK_UPLOAD_NEW:
+                workWithPermissionCheck(Manifest.permission.WRITE_EXTERNAL_STORAGE, new WebPermissionCallback(function) {
+                    @Override
+                    public void onGain() {
+                        new FilesUploadForWeb().uploadFilesNew(data, function);
+                    }
+                });
                 //上传文件
-                new FilesUploadForWeb().uploadFilesNew(data, function);
                 break;
 
             case InformationHandler.CALLBACK_SET_RIRGT_ICON:
@@ -219,7 +250,6 @@ public class DefaultWebViewActivity extends BaseWebViewActivity {
                     //启动该页面即可
                     startActivity(intent);
                 }
-
                 break;
             case InformationHandler.NAV:
                 if (null == data) {
@@ -318,5 +348,9 @@ public class DefaultWebViewActivity extends BaseWebViewActivity {
         } else {
             doExit();
         }
+    }
+
+    public Activity getActivity() {
+        return this;
     }
 }
