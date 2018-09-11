@@ -9,7 +9,9 @@ import com.github.lzyzsd.jsbridge.CallBackFunction;
 
 import java.io.File;
 
+import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.observers.ResourceObserver;
 import io.reactivex.schedulers.Schedulers;
 import me.xujichang.basic.wrapper.WrapperEntity;
 import me.xujichang.util.file.Files;
@@ -59,7 +61,12 @@ public class SingleFileUpload {
         uploadFile(uploadFile);
     }
 
-    private void uploadFile(final File file) {
+    protected void uploadFile(final File file) {
+
+        uploadFile(file, function);
+    }
+
+    protected void uploadFile(final File file, CallBackFunction function) {
         SilentResourceObserver<WrapperEntity<String>> observer = new SilentResourceObserver<WrapperEntity<String>>(null) {
 
             @Override
@@ -77,6 +84,10 @@ public class SingleFileUpload {
                 function.onCallBack(DataType.createRespData(WebConst.StatusCode.STATUS_ERROR, StringTool.getErrorMsg(e), uploadFile.getName()));
             }
         };
+        uploadFile(file, observer);
+    }
+
+    protected void uploadFile(final File file, ResourceObserver<WrapperEntity<String>> observer) {
         RetrofitManager
                 .getOurInstance()
                 .createReq(CommonApi.class)

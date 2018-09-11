@@ -21,9 +21,10 @@
             android:layout_width="0dp"
             android:layout_height="?android:actionBarSize"
             android:layout_weight="1"
+            android:ellipsize="marquee"
             android:gravity="center"
             android:minWidth="50dp"
-            android:text="TextView"
+            android:singleLine="true"
             android:textColor="@color/white"
             android:textSize="18sp" />
 

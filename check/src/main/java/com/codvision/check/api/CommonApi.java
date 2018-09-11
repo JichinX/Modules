@@ -49,6 +49,15 @@ public interface CommonApi {
     @Multipart
     @POST("/{path}/api/v3/upload/index")
     Observable<WrapperEntity<String>> uploadSingleFile(@Path("path") String path, @Part() MultipartBody.Part part);
+    /**
+     * 上传单文件
+     *
+     * @param part
+     * @return
+     */
+    @Multipart
+    @POST("/upload/index")
+    Observable<WrapperEntity<String>> uploadSingleFile( @Part() MultipartBody.Part part);
 
     @POST("/post/unread_count")
     Observable<WrapperEntity<Integer>> getUnreadMessageCount();

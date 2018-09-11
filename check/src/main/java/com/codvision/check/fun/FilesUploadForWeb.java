@@ -37,9 +37,7 @@ public class FilesUploadForWeb {
             return;
         }
         if (files.size() == 1 && isNew) {
-            new SingleFileUpload()
-                    .withFile(files.get(0))
-                    .upload(function);
+            onUpload(files.get(0), function);
         } else {
             final CallBackFunction filesFunction = function;
             result = new Result(files.size());
@@ -67,9 +65,21 @@ public class FilesUploadForWeb {
                 }
             };
             for (File file : files) {
-                new SingleFileUpload().withFile(file).upload(nativeCallback);
+                onUpload(file, nativeCallback);
             }
         }
+    }
+
+    /**
+     * 开放方法，方便扩展
+     *
+     * @param file
+     * @param function
+     */
+    protected void onUpload(File file, CallBackFunction function) {
+        new SingleFileUpload()
+                .withFile(file)
+                .upload(function);
     }
 
     private static ArrayList<File> parseFiles(String data) {
