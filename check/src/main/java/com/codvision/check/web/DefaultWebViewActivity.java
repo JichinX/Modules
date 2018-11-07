@@ -1,11 +1,13 @@
-package com.codvision.check.web;
+package com.codvision.check.impl;
 
+import android.Manifest;
+import android.app.Activity;
 import android.arch.lifecycle.Lifecycle;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
@@ -16,19 +18,27 @@ import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.Glide;
 import com.codvision.check.R;
+import com.codvision.check.data.DataType;
+import com.codvision.check.fun.FilesUploadForWeb;
+import com.codvision.check.fun.LocationForWeb;
+import com.codvision.check.fun.NavForWeb;
+import com.codvision.check.fun.PictureForWeb;
+import com.codvision.check.handler.Handler;
+import com.codvision.check.permission.WebPermissionCallback;
 import com.github.lzyzsd.jsbridge.CallBackFunction;
 import com.google.common.base.Strings;
 
 import org.json.JSONObject;
 
-import me.xujichang.hybirdbase.base.HybirdConst;
-import me.xujichang.hybirdbase.module.web.HyBirdWebViewActivity;
-import me.xujichang.hybirdbase.module.web.interfaces.IWebJsCallBack;
+import java.util.Arrays;
+
 import me.xujichang.util.tool.LogTool;
+import me.xujichang.web.WebConst;
+import me.xujichang.web.base.BaseWebViewActivity;
+import me.xujichang.web.interfaces.IWebJsCallBack;
 
 /**
  * Des:
@@ -37,65 +47,45 @@ import me.xujichang.util.tool.LogTool;
  * Created on 2017/11/27 14:07.
  */
 
-public class DefaultWebViewActivity extends HyBirdWebViewActivity {
+public class DefaultWebViewActivity extends BaseWebViewActivity {
 
     private boolean isRightIconActionCallback = false;
     private MaterialDialog alertDialog = null;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         getActionbarTitle().setVisibility(View.INVISIBLE);
-        String url = getIntent().getStringExtra(HybirdConst.FLAG.WEB_URL);
+        String url = getIntent().getStringExtra(WebConst.FLAG.WEB_URL);
         loadUrl(url);
     }
 
     @Override
     protected void initWebSetting(WebSettings settings) {
-        settings.supportMultipleWindows();
-//
-//        settings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
-//        settings.setAppCacheEnabled(true);
-
-        //允许DOM 显示地图
-        settings.setDomStorageEnabled(true);
-//        settings.setAppCacheMaxSize(1024 * 1024 * 8);
-        //适应宽度
-        settings.setUseWideViewPort(true);
-        settings.setLoadWithOverviewMode(true);
-        //设置缩放
-        settings.setBuiltInZoomControls(true);
-        //隐藏缩放
-        settings.setDisplayZoomControls(false);
-        settings.setJavaScriptCanOpenWindowsAutomatically(true);
-        settings.setDatabaseEnabled(true);
-        //定位
-        settings.setGeolocationEnabled(true);
-        settings.setSupportZoom(true);
-
+        super.initWebSetting(settings);
     }
 
     @Override
     protected void initExtHandler(IWebJsCallBack callBack) {
-        new InformationHandler(getWebView()).addJsCallBack(this);
+//        new InformationHandler(getWebView()).addJsCallBack(this);
     }
 
     @Override
     protected void initActionBar() {
         showBackArrow();
-        setRightImg(me.xujichang.hybirdbase.R.drawable.ic_refresh);
+        setRightImg(R.drawable.ic_refresh);
     }
 
     @Override
-    protected void setActionBarTitle(String title) {
+    public void setActionBarTitle(String title) {
         TextView actionbarTitle = getActionbarTitle();
         if (TextUtils.isEmpty(title)) {
             actionbarTitle.setVisibility(View.INVISIBLE);
         } else {
             actionbarTitle.setVisibility(View.VISIBLE);
             actionbarTitle.setText(title);
-            actionbarTitle.setOnClickListener(this);
+//            actionbarTitle.setOnClickListener(this);
         }
     }
 
@@ -114,7 +104,7 @@ public class DefaultWebViewActivity extends HyBirdWebViewActivity {
     @Override
     public void onPageFinished(WebView view, String url) {
         super.onPageFinished(view, url);
-        LogTool.d("onPageFinished:" + url);
+
     }
 
     @Override
@@ -135,31 +125,49 @@ public class DefaultWebViewActivity extends HyBirdWebViewActivity {
     public void onJsCallBack(String type, String data, CallBackFunction function) {
         LogTool.d("---------type:" + type + "    data:" + data);
         switch (type) {
-            case InformationHandler.CALLBACK_LOCATION:
+            case Handler.CALLBACK_LOCATION:
                 //调用定位
-                LocationForWeb.getInstance(function)
-                        .withContext(this)
-                        .withOptions(data);
+                workWithPermissionCheck(Arrays.asList(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION), new WebPermissionCallback(function) {
+                    @Override
+                    public void onGain() {
+                        LocationForWeb.getInstance(function)
+                                .withContext(getActivity())
+                                .withOptions(data);
+                    }
+                });
+
                 break;
-            case InformationHandler.CALLBACK_CAMERA:
+            case Handler.CALLBACK_CAMERA:
                 //相机
-                PictureForWeb.getInstance()
-                        .justCamera(true)
-                        .withFunction(function)
-                        .withOptions(data)
-                        .withContext(this)
-                        .execute();
+                workWithPermissionCheck(Manifest.permission.CAMERA, new WebPermissionCallback(function) {
+                    @Override
+                    public void onGain() {
+                        PictureForWeb.getInstance()
+                                .justCamera(true)
+                                .withFunction(function)
+                                .withOptions(data)
+                                .withExif(false)
+                                .withContext(getActivity())
+                                .execute();
+                    }
+                });
                 break;
-            case InformationHandler.CALLBACK_PICTURE:
+            case Handler.CALLBACK_PICTURE:
                 //选择图片
-                PictureForWeb.getInstance()
-                        .withFunction(function)
-                        .withOptions(data)
-                        .withContext(this)
-                        .execute();
+                workWithPermissionCheck(Arrays.asList(Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE), new WebPermissionCallback(function) {
+                    @Override
+                    public void onGain() {
+                        PictureForWeb.getInstance()
+                                .withFunction(function)
+                                .withOptions(data)
+                                .withExif(false)
+                                .withContext(getActivity())
+                                .execute();
+                    }
+                });
                 break;
-            case InformationHandler.CALLBACK_USERID:
-                String unionid = "";
+            case Handler.CALLBACK_USERID:
+                String unionid = obtainUserId();
                 String response = null;
                 if (TextUtils.isEmpty(unionid)) {
                     response = DataType.createErrorRespData(WebConst.StatusCode.STATUS_DATA_NULL, "未获取到UserID");
@@ -168,16 +176,26 @@ public class DefaultWebViewActivity extends HyBirdWebViewActivity {
                 }
                 function.onCallBack(response);
                 break;
-            case InformationHandler.CALLBACK_UPLOAD:
-                //上传文件
-                new FilesUploadForWeb().uploadFiles(data, function);
+            case Handler.CALLBACK_UPLOAD:
+                workWithPermissionCheck(Manifest.permission.WRITE_EXTERNAL_STORAGE, new WebPermissionCallback(function) {
+                    @Override
+                    public void onGain() {
+                        //上传文件
+                        new FilesUploadForWeb().uploadFiles(data, function);
+                    }
+                });
                 break;
-            case InformationHandler.CALLBACK_UPLOAD_NEW:
+            case Handler.CALLBACK_UPLOAD_NEW:
+                workWithPermissionCheck(Manifest.permission.WRITE_EXTERNAL_STORAGE, new WebPermissionCallback(function) {
+                    @Override
+                    public void onGain() {
+                        new FilesUploadForWeb().uploadFilesNew(data, function);
+                    }
+                });
                 //上传文件
-                new FilesUploadForWeb().uploadFilesNew(data, function);
                 break;
 
-            case InformationHandler.CALLBACK_SET_RIRGT_ICON:
+            case Handler.CALLBACK_SET_RIRGT_ICON:
                 if (null == data) {
                     break;
                 }
@@ -195,15 +213,15 @@ public class DefaultWebViewActivity extends HyBirdWebViewActivity {
                 break;
 
 
-            case InformationHandler.OPEN_LINK:
+            case Handler.OPEN_LINK:
                 if (null == data) {
                     break;
                 }
                 if (data.startsWith("http")) {
                     Uri uri = Uri.parse(data);
                     Intent intent = new Intent();
-                    intent.setClass(DefaultWebViewActivity.this, DefaultWebViewActivity.class);
-                    intent.putExtra(HybirdConst.FLAG.WEB_URL, uri.toString());
+                    intent.setClass(getContext(), getClass());
+                    intent.putExtra(WebConst.FLAG.WEB_URL, uri.toString());
                     startActivity(intent);
                 } else {
                     Uri uri = Uri.parse(data);
@@ -213,9 +231,8 @@ public class DefaultWebViewActivity extends HyBirdWebViewActivity {
                     //启动该页面即可
                     startActivity(intent);
                 }
-
                 break;
-            case InformationHandler.NAV:
+            case Handler.NAV:
                 if (null == data) {
                     break;
                 }
@@ -246,6 +263,16 @@ public class DefaultWebViewActivity extends HyBirdWebViewActivity {
                 super.onJsCallBack(type, data, function);
         }
     }
+
+    /**
+     * 需按各自项目 自己实现
+     *
+     * @return
+     */
+    protected String obtainUserId() {
+        throw new RuntimeException("Stupid！");
+    }
+
 
     @Override
     protected void onLeftAreaClick() {
@@ -280,42 +307,14 @@ public class DefaultWebViewActivity extends HyBirdWebViewActivity {
                 viewGroup.removeView(webView);
             }
             webView.clearHistory();
-            webView.clearCache(true);
+            //webView.clearCache(true);
             webView.destroy();
         }
         super.onDestroy();
         LogTool.d("onDestroy()");
     }
 
-    @Override
-    protected long getActivityExitDuration() {
-        return WebConst.EXIT_DURATION;
-    }
-
-    /**
-     * 退出
-     */
-    protected void doExit() {
-        showWarningDialog("退出此页面的数据将不会保留，确认退出？", new MaterialDialog.SingleButtonCallback() {
-            @Override
-            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                if (which == DialogAction.POSITIVE) {
-                    finish();
-                }
-                dialog.dismiss();
-            }
-        });
-    }
-
-    /**
-     * 返回上一页面
-     */
-    protected void doHistory() {
-        WebView webView = getWebView();
-        if (webView.canGoBack()) {
-            webView.goBack();
-        } else {
-            doExit();
-        }
+    public Activity getActivity() {
+        return this;
     }
 }

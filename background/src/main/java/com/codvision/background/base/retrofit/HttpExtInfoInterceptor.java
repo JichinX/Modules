@@ -1,9 +1,12 @@
-package com.codvision.background.base.retrofit;
+package me.xujichang.basic.retrofit;
+
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import me.xujichang.basic.BaseConst;
+import me.xujichang.basic.BaseInit;
 import okhttp3.Headers;
 import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
@@ -37,6 +40,9 @@ class HttpExtInfoInterceptor implements Interceptor {
             Map<String, String> values = null;
             for (IExtInfo info : extInfo) {
                 values = info.getValues();
+                if (values.containsKey(BaseInit.TOKEN_KEY)) {
+                    values.put(BaseInit.TOKEN_KEY, RetrofitCenter.tokenValue);
+                }
                 switch (info.getPos()) {
                     case Headers:
                         for (Map.Entry<String, String> entry : values.entrySet()) {
