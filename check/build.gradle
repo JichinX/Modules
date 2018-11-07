@@ -6,13 +6,12 @@ android {
     defaultConfig {
         minSdkVersion min_version
         targetSdkVersion target_version
-        versionCode 108
-        versionName "1.0.8"
+        versionCode 116
+        versionName "1.1.6"
         multiDexEnabled true
     }
 
     buildTypes {
-
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -21,13 +20,30 @@ android {
             }
         }
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 dependencies {
-    compileOnly fileTree(include: ['*.jar'], dir: 'libs')
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation "com.android.support:appcompat-v7:$support"
-    implementation "me.xujichang.modules:base:$module_base"
-
+    implementation 'com.android.support:exifinterface:28.0.0'
     implementation 'com.android.support:multidex:1.0.3'
     implementation "id.zelory:compressor:$compressor"
+    implementation 'com.king.zxing:zxing-lite:1.0.0'
+    implementation 'com.mylhyl:zxingscanner:1.6.0'
+    //    implementation 'com.mabeijianxi:small-video-record2:2.0.3@aar'
+    //所需模块
+    //  web
+    implementation project(':web')
+    //    implementation 'me.xujichang.modules:web:1.0.2'
+    //   basic
+    implementation 'me.xujichang.modules:basic:1.0.3'
+    // ui
+    implementation project(':ui')
+    //    implementation 'me.xujichang.modules:ui:1.0.5'
+    //xutil
+    implementation 'me.xujichang.lib:xutil:1.0.9'
 }
 apply from: '../base_upload.gradle'

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/lv_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <!--放ActionBar-->
+    <ViewStub
+        android:id="@+id/vs_action_bar_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary" />
+    <!--真正的布局 使用FrameLayout是让子类在使用时无感-->
+    <FrameLayout
+        android:id="@+id/fl_view_root"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</LinearLayout>

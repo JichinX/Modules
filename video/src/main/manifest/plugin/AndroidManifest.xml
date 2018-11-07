@@ -1,0 +1,7 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="me.xujihcang.video">
+
+    <application>
+        <activity android:name="com.mabeijianxi.com.mabeijianxi.smallvideorecord2.MediaRecorderActivity" />
+    </application>
+</manifest>

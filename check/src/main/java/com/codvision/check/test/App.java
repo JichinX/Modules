@@ -4,13 +4,16 @@ import android.app.Application;
 import android.content.Context;
 import android.support.multidex.MultiDex;
 
-import com.codvision.base.utils.InitUtil;
 import com.codvision.check.CheckConst;
+
+import me.xujichang.basic.util.InitUtil;
+import me.xujichang.util.tool.LogTool;
 
 public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        LogTool.syncIsDebug(this);
         InitUtil.initModulesSpeed(CheckConst.Modules.inits, this);
         InitUtil.initModulesLow(CheckConst.Modules.inits, this);
     }

@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">ui</string>
+    <string name="str_warning">警告</string>
+    <string name="str_ensure">确定</string>
+    <string name="str_error">出现错误</string>
+    <string name="str_cancel">取消</string>
+    <string name="str_tips">小提示</string>
 </resources>

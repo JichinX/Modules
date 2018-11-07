@@ -2,7 +2,8 @@ package com.codvision.vpn;
 
 import android.app.Application;
 
-import com.codvision.base.ext.IBaseInit;
+import me.xujichang.basic.IBaseInit;
+
 
 /**
  * Project: Platform
@@ -12,6 +13,8 @@ import com.codvision.base.ext.IBaseInit;
  * created by 2018/7/19 - 9:08 PM
  */
 public class VpnSdkInit implements IBaseInit {
+    public static final String INIT_TAG = VpnSdkInit.class.getName();
+
     @Override
     public boolean onInitSpeed(Application application) {
         return false;

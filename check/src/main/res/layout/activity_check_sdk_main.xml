@@ -9,8 +9,7 @@
         android:id="@+id/et_url"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/padding_8dp"
-        android:text="http://192.168.1.138:8848/Inspection/index.html?category=40000" />
+        android:padding="@dimen/padding_8dp" />
 
     <Button
         android:layout_width="wrap_content"

@@ -1,12 +1,12 @@
 package com.codvision.check.api;
 
 
-import com.codvision.base.wrapper.WrapperEntity;
 import com.codvision.check.bean.LocationUpload;
 
 import java.util.List;
 
 import io.reactivex.Observable;
+import me.xujichang.basic.wrapper.WrapperEntity;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.http.Body;
@@ -49,6 +49,15 @@ public interface CommonApi {
     @Multipart
     @POST("/{path}/api/v3/upload/index")
     Observable<WrapperEntity<String>> uploadSingleFile(@Path("path") String path, @Part() MultipartBody.Part part);
+    /**
+     * 上传单文件
+     *
+     * @param part
+     * @return
+     */
+    @Multipart
+    @POST("/upload/index")
+    Observable<WrapperEntity<String>> uploadSingleFile( @Part() MultipartBody.Part part);
 
     @POST("/post/unread_count")
     Observable<WrapperEntity<Integer>> getUnreadMessageCount();

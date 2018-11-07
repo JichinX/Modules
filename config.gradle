@@ -1,17 +1,18 @@
 ext {
     GRADLE_PLUGIN_VERSION = '1.8.4'
     MAVEN_PLUGIN_VERSION = '2.1'
-    LOCAL_REPO_URL = 'file:///Volumes/SdCard/Development/environment/.m2/localmaven'
+    LOCAL_REPO_URL = 'file:///Volumes/Dev/environment/maven/repository/local'
+//    LOCAL_REPO_URL = "file://${rootDir}/maven"
     GROUP_ID = 'me.xujichang.modules'
     android_job = '1.3.0-alpha06'
     worker_runtime = '1.0.0-alpha05'
-    module_base = '1.0.4'
-    support = '27.1.1'
+    module_base = '1.0.5'
+    support = '28.0.0'
     min_version = 16
-    compile_version = 27
-    target_version = 27
+    compile_version = 28
+    target_version = 28
     constraint = '1.1.2'
-    xutil = '1.0.8'
+    xutil = '1.0.9'
     compressor = '2.1.0'
-    room='1.1.1'
+    room = '1.1.1'
 }

@@ -4,8 +4,8 @@ android {
     defaultConfig {
         minSdkVersion min_version
         targetSdkVersion target_version
-        versionCode 104
-        versionName "1.0.4"
+        versionCode 106
+        versionName "1.0.6"
     }
 
     buildTypes {
@@ -28,4 +28,4 @@ dependencies {
     }
     api "me.xujichang.lib:xutil:$xutil"
 }
-apply from: '../base_upload.gradle'
+apply from: "${rootDir}/base_upload.gradle"
