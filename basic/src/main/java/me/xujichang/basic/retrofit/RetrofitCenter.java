@@ -2,11 +2,13 @@ package me.xujichang.basic.retrofit;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
+import me.xujichang.basic.BaseInit;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -138,8 +140,7 @@ public final class RetrofitCenter {
      * @return
      */
     private static OkHttpClient createHttpClient() {
-        ClientConfig clientConfig = new ClientConfig.Builder().build();
-        return createHttpClient(clientConfig);
+        return createHttpClient(null);
     }
 
     /**
@@ -150,7 +151,8 @@ public final class RetrofitCenter {
      */
     private static OkHttpClient createHttpClient(ClientConfig clientConfig) {
         if (null == clientConfig) {
-            clientConfig = new ClientConfig.Builder().build();
+            clientConfig = createDefaultConfig();
+
         }
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
 
@@ -160,15 +162,28 @@ public final class RetrofitCenter {
         builder.writeTimeout(clientConfig.writeTimeOut, TimeUnit.MILLISECONDS);
         //重试
         builder.retryOnConnectionFailure(true);
+        //顺序 也是很重要的
+        if (null != clientConfig.extInfos) {
+            builder.addInterceptor(new HttpExtInfoInterceptor(clientConfig.extInfos));
+        }
         if (null != clientConfig.interceptors) {
             for (Interceptor interceptor : clientConfig.interceptors) {
                 builder.addInterceptor(interceptor);
             }
         }
-        if (null != clientConfig.extInfos) {
-            builder.addInterceptor(new HttpExtInfoInterceptor(clientConfig.extInfos));
-        }
         return builder.build();
+    }
+
+    private static ClientConfig createDefaultConfig() {
+        List<IExtInfo> lIExtInfos = new ArrayList<>();
+        Map<String, String> lMap = new HashMap<>();
+        lMap.put(BaseInit.TOKEN_KEY, tokenValue);
+        lIExtInfos.add(new QueryExtInfo(lMap));
+        ClientConfig lClientConfig = new ClientConfig
+                .Builder()
+                .withExtInfos(lIExtInfos)
+                .build();
+        return lClientConfig;
     }
 
     /**

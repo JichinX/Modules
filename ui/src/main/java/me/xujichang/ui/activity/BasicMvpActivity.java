@@ -33,7 +33,6 @@ public abstract class BasicMvpActivity<V extends IView, P extends BasicPresenter
     @Override
     protected void onStart() {
         super.onStart();
-        presenter.onAttach((V) this);
     }
 
     @Override
@@ -91,6 +90,7 @@ public abstract class BasicMvpActivity<V extends IView, P extends BasicPresenter
     @Override
     public void onLoadFinished(@NonNull Loader<P> loader, P data) {
         presenter = data;
+        presenter.onAttach((V) this);
     }
 
     @Override

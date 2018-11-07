@@ -1,17 +1,21 @@
 package me.xujichang.ui.test;
 
 import android.Manifest;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.view.View;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
 import java.util.Arrays;
 import java.util.Collections;
 
 import me.xujichang.ui.R;
 import me.xujichang.ui.activity.DefaultActionBarActivity;
+import me.xujichang.ui.test.login.LoginActivity;
 import me.xujichang.util.tool.LogTool;
 
 /**
@@ -46,6 +50,7 @@ public class MainActivity extends DefaultActionBarActivity {
             return true;
         }
     });
+    private WebView mWb;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -57,6 +62,15 @@ public class MainActivity extends DefaultActionBarActivity {
     private void initView() {
         initActionBar();
         requestPermission(Arrays.asList(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA, Manifest.permission.ACCESS_FINE_LOCATION));
+        mWb = findViewById(R.id.wb);
+
+        mWb.setWebViewClient(new WebViewClient() {
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                view.loadUrl(url);
+                return true;
+            }
+        });
     }
 
     private void initActionBar() {
@@ -115,6 +129,22 @@ public class MainActivity extends DefaultActionBarActivity {
 
     public void enableMark(View view) {
         enableWaterMark("许继昌 测试");
+    }
+
+    public void login(View view) {
+        startActivity(new Intent(this, LoginActivity.class));
+    }
+
+    public void hideActionBar(View view) {
+        hideActionBar();
+    }
+
+    public void showActionBar(View view) {
+        showActionBar();
+    }
+
+    public void loadWeb(View view) {
+        mWb.loadUrl("http://www.baidu.com");
     }
 
     private class ProcessRunnable implements Runnable {

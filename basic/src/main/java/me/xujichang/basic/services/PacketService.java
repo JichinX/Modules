@@ -20,6 +20,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import me.xujichang.basic.BaseConst;
+import me.xujichang.basic.BaseInit;
 
 /**
  * 后台类似于心跳包的Service
@@ -60,7 +61,7 @@ public class PacketService extends Service {
         super.onCreate();
 
         //创建线程池
-        poolExecutor = new ThreadPoolExecutor(BaseConst.MODULE_SIZE, BaseConst.MODULE_SIZE * 3 / 2, BaseConst.PACKET_DURATION, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(), new Factory());
+        poolExecutor = new ThreadPoolExecutor(BaseInit.MODULE_SIZE, BaseInit.MODULE_SIZE * 3 / 2, BaseInit.PACKET_DURATION, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(), new Factory());
         //开启无限循环线程
         ExecutorService service = Executors.newSingleThreadExecutor();
         service.submit(new LoopRunnable());
@@ -90,7 +91,7 @@ public class PacketService extends Service {
             try {
                 while (!isDestroy) {
                     TaskCenter.executeTasks(poolExecutor);
-                    Thread.sleep(BaseConst.PACKET_DURATION);
+                    Thread.sleep(BaseInit.PACKET_DURATION);
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();

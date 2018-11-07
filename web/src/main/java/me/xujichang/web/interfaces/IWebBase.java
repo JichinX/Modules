@@ -3,6 +3,7 @@ package me.xujichang.web.interfaces;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.view.KeyEvent;
+import android.view.View;
 import android.webkit.ConsoleMessage;
 import android.webkit.JsPromptResult;
 import android.webkit.JsResult;
@@ -141,4 +142,15 @@ public interface IWebBase {
      * @return
      */
     boolean onSystemOperate(String url);
+
+    /**
+     * @param pView
+     * @param pCallback
+     */
+    void onShowCustomView(View pView, WebChromeClient.CustomViewCallback pCallback);
+
+    /**
+     * 退出全屏
+     */
+    void onHideCustomView();
 }

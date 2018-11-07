@@ -1,20 +1,25 @@
 package com.codvision.check.test;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
 
 import com.codvision.check.R;
-import com.codvision.check.impl.WebContainerActivity;
 import com.codvision.check.handler.CheckHandler;
 import com.google.common.base.Strings;
 
 import me.xujichang.ui.activity.DefaultActionBarActivity;
+import me.xujichang.util.system.SystemInfo;
+import me.xujichang.util.tool.LogTool;
 import me.xujichang.web.WebConst;
 
 
@@ -29,10 +34,33 @@ public class MainActivity extends DefaultActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_check_sdk_main);
         initView();
+        String[] propertys = {"ro.boot.serialno", "ro.serialno", "gsm.serial"};
+        for (String key : propertys) {
+            String sn = SystemInfo.getAndroidOsSystemProperties(key);
+            LogTool.d("sn:" + sn);
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return;
+            }
+            LogTool.d("serial:" + Build.getSerial());
+        } else {
+            LogTool.d("serial:" + Build.SERIAL);
+        }
     }
 
     public void goToWeb(View view) {
         String url = mEtUrl.getText().toString();
+        if (null != url) {
+            url = url.trim();
+        }
         if (Strings.isNullOrEmpty(url)) {
             url = "file:///android_asset/web/index.html";
         } else {
@@ -40,7 +68,7 @@ public class MainActivity extends DefaultActionBarActivity {
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
             preferences.edit().putString("url", url).apply();
         }
-        Intent intent = new Intent(this, WebContainerActivity.class);
+        Intent intent = new Intent(this, WebActivity.class);
         intent.putExtra(WebConst.FLAG.WEB_URL, url);
         intent.putExtra(CheckHandler.REQUEST_TOKEN, "测试Token");
         startActivity(intent);

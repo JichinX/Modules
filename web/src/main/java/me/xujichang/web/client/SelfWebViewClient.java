@@ -12,10 +12,12 @@ import android.webkit.MimeTypeMap;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 
 import com.github.lzyzsd.jsbridge.BridgeWebView;
 import com.github.lzyzsd.jsbridge.BridgeWebViewClient;
+import com.google.common.base.Strings;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -36,6 +38,8 @@ public class SelfWebViewClient extends BridgeWebViewClient {
     public static final String NATIVE_IMAGE = "NativeImage";
     public static final String NATIVE_AUDIO = "NativeAudio";
     public static final String NATIVE_FILE = "NativeFile";
+    public static final String NATIVE_VIDEO = "NativeVideo";
+
 
     private IWebBase mWebBase;
 
@@ -59,8 +63,37 @@ public class SelfWebViewClient extends BridgeWebViewClient {
      */
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, String url) {
-        LogTool.d("url:" + url);
-        return mWebBase.onSystemOperate(url) || super.shouldOverrideUrlLoading(view, url);
+        LogTool.d("shouldOverrideUrlLoading:" + url);
+        //判断重定向的方式一
+//        WebView.HitTestResult hitTestResult = view.getHitTestResult();
+//        if (hitTestResult == null) {
+//            return false;
+//        }
+//        if (hitTestResult.getType() == WebView.HitTestResult.UNKNOWN_TYPE) {
+//            return false;
+//        }
+        view.loadUrl(url);
+//        return mWebBase.onSystemOperate(url) || super.shouldOverrideUrlLoading(view, url);
+        return true;
+    }
+
+    @Override
+    public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+        isHintResultUseful(view);
+        return super.shouldOverrideUrlLoading(view, request);
+    }
+
+    private boolean isHintResultUseful(WebView pWebView) {
+        WebView.HitTestResult hitTestResult = pWebView.getHitTestResult();
+        if (null != hitTestResult) {
+            LogTool.d("hitTestResult type - " + hitTestResult.getType() + "  extra - " + hitTestResult.getExtra());
+            if (Strings.isNullOrEmpty(hitTestResult.getExtra())) {
+                return false;
+            } else {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -93,22 +126,6 @@ public class SelfWebViewClient extends BridgeWebViewClient {
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    @Override
-    public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
-        WebResourceResponse response = getResource(request);
-        if (null == response) {
-            return super.shouldInterceptRequest(view, request);
-        } else {
-            return response;
-        }
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private WebResourceResponse getResource(WebResourceRequest request) {
-        return getResource(request.getUrl());
-    }
-
     private WebResourceResponse getResource(String url) {
         Uri uri = Uri.parse(url);
         return getResource(uri);
@@ -120,27 +137,26 @@ public class SelfWebViewClient extends BridgeWebViewClient {
             return null;
         }
         scheme = scheme.toLowerCase();
-        WebResourceResponse res = null;
-        String mimetype = null;
-        if (NATIVE_IMAGE.toLowerCase().equals(scheme)) {
-            mimetype = "image/jpeg";
-        } else if (NATIVE_AUDIO.toLowerCase().equals(scheme)) {
-            mimetype = "audio/*";
+
+        if (scheme.startsWith("file") || scheme.startsWith(NATIVE_IMAGE.toLowerCase()) || scheme.startsWith(NATIVE_VIDEO.toLowerCase())) {
+            try {
+                LogTool.d("请求本地资源:" + scheme);
+                File file = new File(uri.getPath());
+                if (!file.exists()) {
+                    return null;
+                }
+                String mimetype = getMimeType(file);
+                LogTool.d("获取到的mimetype:" + mimetype);
+                FileInputStream inputStream = new FileInputStream(file);
+                return new WebResourceResponse(mimetype, "UTF-8", inputStream);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+                return null;
+            }
         } else {
             return null;
         }
-        try {
-            File file = new File(uri.getPath());
-            LogTool.d("获取到的mimetype:" + getMimeType(file));
-            FileInputStream inputStream = new FileInputStream(file);
-            res = new WebResourceResponse(mimetype, "UTF-8", inputStream);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            return null;
-        }
-        return res;
     }
-
 
     @Override
     public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
@@ -167,7 +183,7 @@ public class SelfWebViewClient extends BridgeWebViewClient {
             return null;
         }
         String fileName = file.getName();
-        if (fileName.equals("") || fileName.endsWith(".")) {
+        if ("".equals(fileName) || fileName.endsWith(".")) {
             return null;
         }
         int index = fileName.lastIndexOf(".");
@@ -180,11 +196,13 @@ public class SelfWebViewClient extends BridgeWebViewClient {
 
     public static String getMimeType(File file) {
         String suffix = getSuffix(file);
+        LogTool.d("suffix:" + suffix);
         if (suffix == null) {
             return "file/*";
         }
         String type = MimeTypeMap.getSingleton().getMimeTypeFromExtension(suffix);
-        if (type != null || !type.isEmpty()) {
+        if (!Strings.isNullOrEmpty(type)) {
+            LogTool.d("MimeTypeMap  getType:" + type);
             return type;
         }
         return "file/*";

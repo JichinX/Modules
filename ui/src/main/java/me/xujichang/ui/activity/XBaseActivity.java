@@ -52,6 +52,7 @@ import me.xujichang.ui.activity.loading.LoadingStatus;
 import me.xujichang.ui.activity.toast.IToast;
 import me.xujichang.ui.activity.watermark.DrawableWaterMark;
 import me.xujichang.ui.activity.watermark.IWaterMark;
+import me.xujichang.ui.keyboard.KeyBoardListener;
 import me.xujichang.ui.promission.IPermission;
 import me.xujichang.ui.promission.IPermissionCallBack;
 import me.xujichang.ui.utils.BitmapUtil;
@@ -223,6 +224,7 @@ public abstract class XBaseActivity extends AppCompatActivity implements IActivi
         if (version < Build.VERSION_CODES.KITKAT) {
             return;
         }
+        //KeyBoardListener.getInstance(this).attachListener();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             //>=21
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -239,7 +241,6 @@ public abstract class XBaseActivity extends AppCompatActivity implements IActivi
             systemContent.getChildAt(0).setFitsSystemWindows(true);
 
             systemContent.addView(statusBarView, 0, lp);
-
         }
     }
 
@@ -328,6 +329,10 @@ public abstract class XBaseActivity extends AppCompatActivity implements IActivi
 
     public void hideActionBar() {
         mVsActionBarContainer.setVisibility(View.GONE);
+    }
+
+    public void showActionBar() {
+        mVsActionBarContainer.setVisibility(View.VISIBLE);
     }
 
     public FrameLayout getmFlViewRoot() {

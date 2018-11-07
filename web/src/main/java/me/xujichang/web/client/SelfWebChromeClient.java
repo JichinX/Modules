@@ -9,17 +9,20 @@ import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 
+import me.xujichang.util.tool.LogTool;
 import me.xujichang.web.interfaces.IWebBase;
 
 /**
  * Des:
  *
  * @author xjc
- *         Created on 2017/11/26 10:33.
+ * Created on 2017/11/26 10:33.
  */
 
 public class SelfWebChromeClient extends WebChromeClient {
     private IWebBase mWebBase;
+    private View customView;
+    private CustomViewCallback mViewCallback;
 
     public SelfWebChromeClient(IWebBase webBase) {
         mWebBase = webBase;
@@ -40,11 +43,15 @@ public class SelfWebChromeClient extends WebChromeClient {
     @Override
     public void onShowCustomView(View view, CustomViewCallback callback) {
         //全屏
+        LogTool.d("进入全屏...");
+        mWebBase.onShowCustomView(view, callback);
     }
 
     @Override
     public void onHideCustomView() {
         //取消全屏
+        LogTool.d("退出全屏...");
+        mWebBase.onHideCustomView();
     }
 
     @Override

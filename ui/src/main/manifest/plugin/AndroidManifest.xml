@@ -1,2 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="me.xujichang.ui"></manifest>
+    package="me.xujichang.ui">
+
+    <application>
+        <activity android:name=".test.login.LoginActivity" />
+    </application>
+</manifest>

@@ -89,7 +89,7 @@ public class BitmapUtil {
                 }
                 i = (int) (i + strwid + inter);
             }
-            canvas.save(Canvas.ALL_SAVE_FLAG);
+            canvas.save();
         } catch (OutOfMemoryError e) {
             if (markBitmap != null && !markBitmap.isRecycled()) {
                 markBitmap.recycle();

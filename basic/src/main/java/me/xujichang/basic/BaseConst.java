@@ -7,6 +7,7 @@ package me.xujichang.basic;
  * @author xujichang
  * created by 2018/7/30 - 11:02 AM
  */
+@Deprecated
 public class BaseConst {
     /**
      * 默认Token key

@@ -1,8 +1,5 @@
 package me.xujichang.autil.exception;
 
-import io.reactivex.exceptions.Exceptions;
-import io.reactivex.internal.util.ExceptionHelper;
-import me.xujichang.util.thirdparty.NetworkUtils;
 import me.xujichang.util.tool.StringTool;
 
 /**

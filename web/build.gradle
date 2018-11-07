@@ -4,8 +4,8 @@ android {
     defaultConfig {
         minSdkVersion min_version
         targetSdkVersion target_version
-        versionCode 101
-        versionName "1.0.1"
+        versionCode 102
+        versionName "1.0.2"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
@@ -23,8 +23,8 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 //    implementation 'me.xujichang.modules:basic:1.0.0'
-    implementation 'me.xujichang.modules:ui:1.0.3'
-    implementation 'com.android.support:appcompat-v7:27.1.1'
+    implementation 'me.xujichang.modules:ui:1.0.5'
+    implementation 'com.android.support:appcompat-v7:28.0.0'
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'

@@ -1,14 +1,21 @@
 package me.xujichang.web.base;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.DrawableRes;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.webkit.ConsoleMessage;
 import android.webkit.JsPromptResult;
 import android.webkit.JsResult;
@@ -16,8 +23,10 @@ import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.lzyzsd.jsbridge.BridgeWebView;
 import com.github.lzyzsd.jsbridge.CallBackFunction;
@@ -42,6 +51,8 @@ import me.xujichang.web.interfaces.IWebLoading;
 import me.xujichang.web.interfaces.IWebParseData;
 import me.xujichang.web.loading.ProgressLoading;
 import me.xujichang.web.util.SmsUtil;
+
+import static android.webkit.WebSettings.LOAD_DEFAULT;
 
 /**
  * Des:
@@ -80,6 +91,9 @@ public abstract class BaseWebViewActivity extends DefaultActionBarActivity imple
      */
     private IWebParseData mParseData;
     private SmsUtil smsUtil;
+    private View customView;
+    private FullscreenHolder fullscreenContainer;
+    private WebChromeClient.CustomViewCallback customViewCallback;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -132,6 +146,28 @@ public abstract class BaseWebViewActivity extends DefaultActionBarActivity imple
     }
 
     protected void initWebSetting(WebSettings settings) {
+        //配置基本的设置
+        //缓存设置为默认：本地 未过期
+        settings.setCacheMode(LOAD_DEFAULT);
+        settings.setDomStorageEnabled(true);
+        settings.setDatabaseEnabled(true);
+        settings.setAppCacheEnabled(true);
+        settings.setAppCachePath(getFilesDir().getPath());
+        //缩放控件
+        settings.setDisplayZoomControls(false);
+        settings.setBuiltInZoomControls(true);
+        //定位
+        settings.setGeolocationEnabled(true);
+
+        settings.setSupportZoom(true);
+        settings.setAllowFileAccess(true);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            settings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+        }
+        settings.setUseWideViewPort(true);
+        settings.setLoadWithOverviewMode(true);
+
+        settings.setJavaScriptCanOpenWindowsAutomatically(true);
     }
 
     private void initWebHandler() {
@@ -159,6 +195,7 @@ public abstract class BaseWebViewActivity extends DefaultActionBarActivity imple
         setRightImage(R.drawable.ic_refresh);
     }
 
+    @Override
     protected void onRightAreaClick() {
         //刷新当前页面
         reloadUrl(null);
@@ -175,8 +212,9 @@ public abstract class BaseWebViewActivity extends DefaultActionBarActivity imple
         }
     }
 
+    @Override
     protected void onLeftAreaClick() {
-
+        onBackPressed();
     }
 
     /**
@@ -217,27 +255,16 @@ public abstract class BaseWebViewActivity extends DefaultActionBarActivity imple
 
     @Override
     public void onPageFinished(WebView view, String url) {
+        LogTool.d("onPageFinished:" + url);
         mLoading.stop();
     }
 
     @Override
     public void onPageStarted(WebView view, String url, Bitmap favicon) {
+        LogTool.d("onPageStarted:" + url);
         mLoading.start();
     }
 
-    /**
-     * 是否拦截返回键事件
-     *
-     * @param view  WebView
-     * @param event event
-     * @return
-     */
-    @Override
-    public boolean onOverrideKeyEvent(WebView view, KeyEvent event) {
-        //默认拦截返回事件
-        LogTool.d("onOverrideKeyEvent:" + event.getKeyCode());
-        return true;
-    }
 
     @Override
     public void onPageProgress(WebView view, int newProgress) {
@@ -290,24 +317,6 @@ public abstract class BaseWebViewActivity extends DefaultActionBarActivity imple
                 break;
             default:
         }
-    }
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (onOverrideKeyEvent(keyCode, event)) {
-            return true;
-        }
-        return super.onKeyDown(keyCode, event);
-    }
-
-    protected boolean onOverrideKeyEvent(int keyCode, KeyEvent event) {
-        if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
-            if (mWebView.canGoBack()) {
-                mWebView.goBack();
-                return true;
-            }
-        }
-        return false;
     }
 
     public String getUrl() {
@@ -433,4 +442,160 @@ public abstract class BaseWebViewActivity extends DefaultActionBarActivity imple
         smsUtil.unregisterReceiver(getContext());
         super.onDestroy();
     }
+
+    ///=================全屏=======================
+    protected static final FrameLayout.LayoutParams COVER_SCREEN_PARAMS = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+
+    @Override
+    public void onShowCustomView(View pView, WebChromeClient.CustomViewCallback pCallback) {
+//        if (customView != null) {
+//            pCallback.onCustomViewHidden();
+//            return;
+//        }
+//        FrameLayout decor = (FrameLayout) getWindow().getDecorView();
+//        fullscreenContainer = new FullscreenHolder(getContext());
+//        fullscreenContainer.addView(pView, COVER_SCREEN_PARAMS);
+//        decor.addView(fullscreenContainer, COVER_SCREEN_PARAMS);
+//        customView = pView;
+////        setStatusBarVisibility(false);
+//        customViewCallback = pCallback;
+        ViewGroup parent = (ViewGroup) mWebView.getParent();
+        parent.removeView(mWebView);
+
+        // 设置背景色为黑色
+        pView.setBackgroundColor(getResources().getColor(R.color.material_black));
+        parent.addView(pView);
+        customView = pView;
+
+        setFullScreen();
+        hideActionBar();
+    }
+
+    private void setFullScreen() {
+
+    }
+
+//    private void setStatusBarVisibility(boolean visible) {
+//        int flag = visible ? 0 : WindowManager.LayoutParams.FLAG_FULLSCREEN;
+//        getWindow().setFlags(flag, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+//    }
+
+    @Override
+    public void onHideCustomView() {
+        if (customView == null) {
+            return;
+        }
+//        setStatusBarVisibility(true);
+//        FrameLayout decor = (FrameLayout) getWindow().getDecorView();
+//        decor.removeView(fullscreenContainer);
+//        fullscreenContainer = null;
+//        customView = null;
+//        customViewCallback.onCustomViewHidden();
+        ViewGroup parent = (ViewGroup) customView.getParent();
+        parent.removeView(customView);
+        parent.addView(mWebView);
+        customView = null;
+        quitFullScreen();
+        showActionBar();
+    }
+
+    private void quitFullScreen() {
+
+    }
+
+    /**
+     * 全屏容器界面
+     */
+    static class FullscreenHolder extends FrameLayout {
+
+        public FullscreenHolder(Context ctx) {
+            super(ctx);
+            setBackgroundColor(ctx.getResources().getColor(android.R.color.black));
+        }
+
+        @Override
+        public boolean onTouchEvent(MotionEvent evt) {
+            return true;
+        }
+    }
+
+    /**
+     * 退出
+     */
+    protected void doExit() {
+        showWarningDialog("退出此页面的数据将不会保留，确认退出？", new MaterialDialog.SingleButtonCallback() {
+            @Override
+            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                if (which == DialogAction.POSITIVE) {
+                    finish();
+                }
+                dialog.dismiss();
+            }
+        });
+    }
+
+    /**
+     * 返回上一页面
+     */
+    protected void doHistory() {
+        WebView webView = getWebView();
+        if (webView.canGoBack()) {
+            webView.goBack();
+        } else {
+            doExit();
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (customView != null) {
+            onHideCustomView();
+            return;
+        }
+        if (mWebView.canGoBack()) {
+            mWebView.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+            mWebView.goBack();
+            return;
+        }
+        super.onBackPressed();
+    }
+
+    //=======================按键事件监听==================
+//    @Override
+//    public boolean onKeyUp(int keyCode, KeyEvent event) {
+//        return super.onKeyUp(keyCode, event);
+//    }
+//
+//    @Override
+//    public boolean onKeyDown(int keyCode, KeyEvent event) {
+//        if (onOverrideKeyEvent(keyCode, event)) {
+//            return true;
+//        }
+//        return super.onKeyDown(keyCode, event);
+//    }
+//
+//    protected boolean onOverrideKeyEvent(int keyCode, KeyEvent event) {
+//        if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
+//            if (mWebView.canGoBack()) {
+//                mWebView.goBack();
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
+
+    /**
+     * 是否拦截返回键事件
+     *
+     * @param view  WebView
+     * @param event event
+     * @return
+     */
+    @Override
+    public boolean onOverrideKeyEvent(WebView view, KeyEvent event) {
+        //默认拦截返回事件
+        LogTool.d("onOverrideKeyEvent:code - " + event.getKeyCode() + "  repeat - " + event.getRepeatCount() + "   action - " + event.getAction());
+        return false;
+    }
+
 }

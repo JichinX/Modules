@@ -57,6 +57,7 @@ public class QRForWeb {
      */
     private static final int TYPE_IDENTIFY = 1;
     private static final String KEY_TITLE = "key_title";
+    private static final int REQUEST_QR = 10007;
     private static QRForWeb instance;
     /**
      * 来自Web的数据
@@ -132,7 +133,7 @@ public class QRForWeb {
         ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeCustomAnimation(context, R.anim.in, R.anim.out);
         Intent intent = new Intent(context, CaptureActivity.class);
         intent.putExtra(KEY_TITLE, "。。。");
-        ActivityCompat.startActivityForResult(context, intent, WebConst.RequestCode.QRCODE, optionsCompat.toBundle());
+        ActivityCompat.startActivityForResult(context, intent, REQUEST_QR, optionsCompat.toBundle());
     }
 
     /**
@@ -188,7 +189,7 @@ public class QRForWeb {
     }
 
     public static boolean onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == WebConst.RequestCode.QRCODE) {
+        if (requestCode == REQUEST_QR) {
             if (resultCode == RESULT_OK) {
                 if (data != null) {
                     //识别结果

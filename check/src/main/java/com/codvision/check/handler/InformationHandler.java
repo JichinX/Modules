@@ -11,48 +11,48 @@ import me.xujichang.web.handler.WebHandler;
  * @author xjc
  * Created on 2017/11/27 14:09.
  */
-
+@Deprecated
 public class InformationHandler extends WebHandler {
     /**
      * 定位
      */
-    public static final String CALLBACK_LOCATION = "location";
-    /**
-     * 相机
-     */
-    public static final String CALLBACK_CAMERA = "camera";
+    public static final String CALLBACK_LOCATION = Handler.CALLBACK_LOCATION;
     /**
      * 录音
      */
-    public static final String CALLBACK_RECORD = "record";
+    public static final String CALLBACK_RECORD = Handler.CALLBACK_RECORD;
+    /**
+     * 相机
+     */
+    public static final String CALLBACK_CAMERA = Handler.CALLBACK_CAMERA;
     /**
      * 获取图片
      */
-    public static final String CALLBACK_PICTURE = "picture";
+    public static final String CALLBACK_PICTURE = Handler.CALLBACK_PICTURE;
     /**
      * USerID
      */
-    public static final String CALLBACK_USERID = "userid";
+    public static final String CALLBACK_USERID = Handler.CALLBACK_USERID;
 
     /**
      * setRightIcon
      */
-    public static final String CALLBACK_SET_RIRGT_ICON = "setRightIcon";
+    public static final String CALLBACK_SET_RIRGT_ICON = Handler.CALLBACK_SET_RIRGT_ICON;
 
     /**
      * upload
      */
-    public static final String CALLBACK_UPLOAD = "upload";
+    public static final String CALLBACK_UPLOAD = Handler.CALLBACK_UPLOAD;
     /**
      * upload
      */
-    public static final String CALLBACK_UPLOAD_NEW = "upload_new";
+    public static final String CALLBACK_UPLOAD_NEW = Handler.CALLBACK_UPLOAD_NEW;
 
 
     /**
      * 跳转
      */
-    public static final String OPEN_LINK = "openLink";
+    public static final String OPEN_LINK = Handler.OPEN_LINK;
 
 
     /**
