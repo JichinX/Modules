@@ -20,12 +20,12 @@ import me.xujichang.util.simple.interfaces.XOnClickListener;
  * created by 2018/9/14-上午10:20
  */
 public abstract class SimpleLoginActivity<V extends ILoginView, P extends BasicLoginPresenter<V>> extends BasicLoginActivity<V, P> {
-    private TextInputLayout mEtName;
-    private TextInputLayout mEtPwd;
+    protected TextInputLayout mEtName;
+    protected TextInputLayout mEtPwd;
     /**
      * 登录
      */
-    private Button mBtnLogin;
+    protected Button mBtnLogin;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -33,7 +33,9 @@ public abstract class SimpleLoginActivity<V extends ILoginView, P extends BasicL
         hideActionBar();
         setContentView(R.layout.activity_login_simple);
         initView();
+        initData();
     }
+
 
     private void initView() {
         mEtName = findViewById(R.id.et_name);
@@ -66,4 +68,6 @@ public abstract class SimpleLoginActivity<V extends ILoginView, P extends BasicL
     protected void onDataNull(TextInputLayout mEtName) {
         mEtName.setError("不能为空");
     }
+
+    protected abstract void initData();
 }

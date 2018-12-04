@@ -25,4 +25,9 @@ public class LoginActivity extends SimpleLoginActivity<ILoginView<UserInfo>, Log
     public void onLoginFail(String msg) {
         showToast("登录失败");
     }
+
+    @Override
+    protected void initData() {
+
+    }
 }

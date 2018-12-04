@@ -2,8 +2,13 @@ package com.codvision.check.impl;
 
 import android.Manifest;
 import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.webkit.ValueCallback;
+import android.webkit.WebChromeClient;
+import android.webkit.WebView;
 
 import com.codvision.check.bean.UploadFile;
 import com.codvision.check.data.DataType;
@@ -28,7 +33,9 @@ import me.xujichang.web.interfaces.IWebJsCallBack;
  */
 public class WebContainerActivity extends DefaultWebViewActivity implements VideoForWeb.FileUploadCallBack {
     private static final int CAMERA_ACTIVITY = 11;
+    private static final int REQUEST_FILE = 12;
     private String token;
+    private ValueCallback<Uri[]> mValueCallback;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -121,27 +128,11 @@ public class WebContainerActivity extends DefaultWebViewActivity implements Vide
                 workWithPermissionCheck(Manifest.permission.CAMERA, new WebPermissionCallback(function) {
                     @Override
                     public void onGain() {
-//                        Intent mIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-//                        mIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0.7);//画质0.5
-//                        mIntent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 15000);//70s
-//                        startActivityForResult(mIntent, CAMERA_ACTIVITY);//CAMERA_ACTIVITY = 1
                         VideoForWeb.getInstance(function)
                                 .withActivity(getActivity())
                                 .withFileUploadCallBack(obtainCallback())
                                 .withOperations(data)
                                 .execute();
-//                        MediaRecorderConfig config = new MediaRecorderConfig.Buidler()
-//
-//                                .fullScreen(false)
-//                                .smallVideoWidth(360)
-//                                .smallVideoHeight(480)
-//                                .recordTimeMax(6000)
-//                                .recordTimeMin(1500)
-//                                .maxFrameRate(20)
-//                                .videoBitrate(600000)
-//                                .captureThumbnailsTime(1)
-//                                .build();
-//                        MediaRecorderActivity.goSmallVideoRecorder(GlobalUtil.getCurrentContext(), VideoResultActivity.class.getName(), config);
                     }
                 });
                 break;
@@ -171,6 +162,11 @@ public class WebContainerActivity extends DefaultWebViewActivity implements Vide
         if (!catched) {
             catched = VideoForWeb.getInstance().onActivityResult(requestCode, resultCode, data);
         }
+        if (requestCode == REQUEST_FILE) {
+            catched = true;
+            mValueCallback.onReceiveValue(data == null ? null : new Uri[]{data.getData()});
+            mValueCallback = null;
+        }
         if (!catched) {
             super.onActivityResult(requestCode, resultCode, data);
         }
@@ -183,5 +179,28 @@ public class WebContainerActivity extends DefaultWebViewActivity implements Vide
      */
     @Override
     public void onUpload(UploadFile file) {
+    }
+
+    /**
+     * TODO 仅适配Android5.0以上版本，一下版本不与适配
+     *
+     * @param webView
+     * @param filePathCallback
+     * @param fileChooserParams
+     * @return
+     */
+    @Override
+    public boolean onPageFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback, WebChromeClient.FileChooserParams fileChooserParams) {
+        Intent intent = null;
+        if (null != mValueCallback) {
+            mValueCallback.onReceiveValue(null);
+            mValueCallback = null;
+        }
+        mValueCallback = filePathCallback;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            intent = fileChooserParams.createIntent();
+        }
+        startActivityForResult(intent, REQUEST_FILE);
+        return true;
     }
 }

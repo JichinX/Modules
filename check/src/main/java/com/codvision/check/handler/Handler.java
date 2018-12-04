@@ -87,7 +87,9 @@ public class Handler extends WebHandler {
      * 直接使用相机
      */
     public static final String REQUEST_CAMERA_EXT = "camera_ext";
-
+    /**
+     * 视频录制
+     */
     public static final String CALLBACK_VIDEO_RECORD = "video_record";
 
     public Handler(BridgeWebView webView) {

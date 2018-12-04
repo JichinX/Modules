@@ -35,4 +35,4 @@ dependencies {
     implementation project(':base')
     implementation 'me.xujichang.modules:vpn:1.0.2'
 }
-apply from: "/Volumes/Dev/Project/ASProjects/work/Modules/base_upload.gradle"
+apply from: "${rootDir}/base_upload.gradle"

@@ -1,6 +1,9 @@
 package me.xujichang.web.client;
 
+import android.annotation.TargetApi;
 import android.net.Uri;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.view.View;
 import android.webkit.ConsoleMessage;
 import android.webkit.JsPromptResult;
@@ -59,6 +62,11 @@ public class SelfWebChromeClient extends WebChromeClient {
         //选择文件
         return mWebBase.onPageFileChooser(webView, filePathCallback, fileChooserParams);
     }
+
+//    @Override
+//    public void openFileChooser(ValueCallback<Uri> uploadFile, String acceptType, String capture) {
+//        super(uploadFile, acceptType, capture);
+//    }
 
     @Override
     public boolean onJsPrompt(WebView view, String url, String message, String defaultValue, JsPromptResult result) {
