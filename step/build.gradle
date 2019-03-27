@@ -38,6 +38,7 @@ dependencies {
     implementation "android.arch.persistence.room:guava:$room"
     annotationProcessor "android.arch.persistence.room:compiler:$room"
 //    implementation 'me.xujichang.modules:basic:1.0.3'
+    implementation 'com.github.xujichang:Utils:1.0.0'
     implementation project(path: ':basic')
 }
 apply from: '../base_upload.gradle'

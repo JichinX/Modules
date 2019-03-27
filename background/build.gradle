@@ -35,6 +35,12 @@ dependencies {
     // optional - Guava support for Room, including Optional and ListenableFuture
     implementation "android.arch.persistence.room:guava:$room"
     annotationProcessor "android.arch.persistence.room:compiler:$room"
+    //Retrofit
+    implementation 'com.squareup.retrofit2:retrofit:2.5.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.5.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.12.1'
+    implementation 'com.github.xujichang:Utils:1.0.0'
     implementation project(':base')
 }
 apply from: '../base_upload.gradle'
