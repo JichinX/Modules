@@ -17,9 +17,9 @@ import me.xujichang.web.interfaces.IWebJsCallBack;
  */
 
 public abstract class WebHandler {
-    public static final String CALLBACK_DEFAULT = "default";
-    private BridgeWebView mWebView;
-    private IWebJsCallBack mIWebJsCallBack;
+    public static final String         CALLBACK_DEFAULT = "default";
+    private             BridgeWebView  mWebView;
+    private             IWebJsCallBack mIWebJsCallBack;
 
     public void addJsCallBack(IWebJsCallBack IWebJsCallBack) {
         mIWebJsCallBack = IWebJsCallBack;

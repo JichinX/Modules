@@ -19,19 +19,19 @@ public class Handler extends WebHandler {
     /**
      * 录音
      */
-    public static final String CALLBACK_RECORD = "record";
+    public static final String CALLBACK_RECORD   = "record";
     /**
      * 相机
      */
-    public static final String CALLBACK_CAMERA = "camera";
+    public static final String CALLBACK_CAMERA   = "camera";
     /**
      * 获取图片
      */
-    public static final String CALLBACK_PICTURE = "picture";
+    public static final String CALLBACK_PICTURE  = "picture";
     /**
      * USerID
      */
-    public static final String CALLBACK_USERID = "userid";
+    public static final String CALLBACK_USERID   = "userid";
 
     /**
      * setRightIcon
@@ -41,7 +41,7 @@ public class Handler extends WebHandler {
     /**
      * upload
      */
-    public static final String CALLBACK_UPLOAD = "upload";
+    public static final String CALLBACK_UPLOAD     = "upload";
     /**
      * upload
      */
@@ -62,35 +62,41 @@ public class Handler extends WebHandler {
     /**
      * 导航
      */
-    public static final String NAV = "nav";
+    public static final String NAV                   = "nav";
     /**
      * 获取Token信息
      */
-    public static final String REQUEST_TOKEN = "token";
+    public static final String REQUEST_TOKEN         = "token";
     /**
      * 返回上一页
      */
-    public static final String REQUEST_BACK = "back";
+    public static final String REQUEST_BACK          = "back";
     /**
      * 退出容器
      */
-    public static final String REQUEST_EXIT = "exit";
+    public static final String REQUEST_EXIT          = "exit";
     /**
      * 请求二维码扫描
      */
-    public static final String REQUEST_QR = "qr";
+    public static final String REQUEST_QR            = "qr";
     /**
      * 获取照片的扩展信息
      */
-    public static final String REQUEST_IMG_EXT = "picture_ext";
+    public static final String REQUEST_IMG_EXT       = "picture_ext";
     /**
      * 直接使用相机
      */
-    public static final String REQUEST_CAMERA_EXT = "camera_ext";
+    public static final String REQUEST_CAMERA_EXT    = "camera_ext";
     /**
      * 视频录制
      */
     public static final String CALLBACK_VIDEO_RECORD = "video_record";
+    /**
+     * 直接调用系统相机
+     * 然后根据标志判断是拍照还是录制视频
+     * 仅调用系统相机，无返回信息
+     */
+    public static final String QUICK_CAMERA          = "quick_camera";
 
     public Handler(BridgeWebView webView) {
         super(webView);
@@ -126,5 +132,6 @@ public class Handler extends WebHandler {
         registerNativeHandler(NAV);
 
         registerNativeHandler(CALLBACK_VIDEO_RECORD);
+        registerNativeHandler(QUICK_CAMERA);
     }
 }

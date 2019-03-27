@@ -3,16 +3,12 @@ package me.xujichang.web.client;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.SslError;
-import android.os.Build;
-import android.support.annotation.RequiresApi;
-import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.webkit.DownloadListener;
 import android.webkit.MimeTypeMap;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
-import android.webkit.WebSettings;
 import android.webkit.WebView;
 
 import com.github.lzyzsd.jsbridge.BridgeWebView;
@@ -37,7 +33,7 @@ import me.xujichang.web.interfaces.IWebBase;
 public class SelfWebViewClient extends BridgeWebViewClient {
     public static final String NATIVE_IMAGE = "NativeImage";
     public static final String NATIVE_AUDIO = "NativeAudio";
-    public static final String NATIVE_FILE = "NativeFile";
+    public static final String NATIVE_FILE  = "NativeFile";
     public static final String NATIVE_VIDEO = "NativeVideo";
 
 
@@ -54,26 +50,33 @@ public class SelfWebViewClient extends BridgeWebViewClient {
         mWebBase = base;
     }
 
-    /**
-     * 必须调用 super,因为父类有额外操作{@link super#shouldOverrideUrlLoading(WebView, String)}
-     *
-     * @param view
-     * @param url
-     * @return
-     */
+    //    /**
+    //     * 必须调用 super,因为父类有额外操作{@link super#shouldOverrideUrlLoading(WebView, String)}
+    //     *
+    //     * @param view
+    //     * @param url
+    //     * @return
+    //     */
+    //    @Override
+    //    public boolean shouldOverrideUrlLoading(WebView view, String url) {
+    //        LogTool.d("shouldOverrideUrlLoading:" + url);
+    //        //判断重定向的方式一
+    ////        WebView.HitTestResult hitTestResult = view.getHitTestResult();
+    ////        if (hitTestResult == null) {
+    ////            return false;
+    ////        }
+    ////        if (hitTestResult.getType() == WebView.HitTestResult.UNKNOWN_TYPE) {
+    ////            return false;
+    ////        }
+    //        view.loadUrl(url);
+    ////        return mWebBase.onSystemOperate(url) || super.shouldOverrideUrlLoading(view, url);
+    //        return true;
+    //    }
+
+
     @Override
-    public boolean shouldOverrideUrlLoading(WebView view, String url) {
-        LogTool.d("shouldOverrideUrlLoading:" + url);
-        //判断重定向的方式一
-//        WebView.HitTestResult hitTestResult = view.getHitTestResult();
-//        if (hitTestResult == null) {
-//            return false;
-//        }
-//        if (hitTestResult.getType() == WebView.HitTestResult.UNKNOWN_TYPE) {
-//            return false;
-//        }
-        view.loadUrl(url);
-//        return mWebBase.onSystemOperate(url) || super.shouldOverrideUrlLoading(view, url);
+    protected boolean onCustomShouldOverrideUrlLoading(String url) {
+        getWebView().loadUrl(url);
         return true;
     }
 
@@ -103,15 +106,19 @@ public class SelfWebViewClient extends BridgeWebViewClient {
         mWebBase.onPageStarted(view, url, favicon);
     }
 
-    /**
-     * 必须调用 super,因为父类有额外操作{@link super#onPageFinished(WebView, String)}
-     *
-     * @param view
-     * @param url
-     */
+    //    /**
+    //     * 必须调用 super,因为父类有额外操作{@link super#onPageFinished(WebView, String)}
+    //     *
+    //     * @param view
+    //     * @param url
+    //     */
+    //    @Override
+    //    public void onPageFinished(WebView view, String url) {
+    //        super.onPageFinished(view, url);
+    //
+    //    }
     @Override
-    public void onPageFinished(WebView view, String url) {
-        super.onPageFinished(view, url);
+    protected void onCustomPageFinishd(WebView view, String url) {
         view.getSettings().setBlockNetworkImage(false);
         mWebBase.onPageFinished(view, url);
     }
@@ -169,7 +176,7 @@ public class SelfWebViewClient extends BridgeWebViewClient {
         //加载SSL出错 是否继续加载
         LogTool.d("ssl:" + error.getUrl());
         handler.proceed();// 接受所有网站的证书
-//        super.onReceivedSslError(view, handler, error);
+        //        super.onReceivedSslError(view, handler, error);
     }
 
     @Override

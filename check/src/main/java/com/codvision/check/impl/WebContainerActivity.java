@@ -5,11 +5,15 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.codvision.check.CheckInit;
 import com.codvision.check.bean.UploadFile;
 import com.codvision.check.data.DataType;
 import com.codvision.check.fun.PictureForWeb;
@@ -17,6 +21,7 @@ import com.codvision.check.fun.QRForWeb;
 import com.codvision.check.fun.QrcodeForWeb;
 import com.codvision.check.fun.RecordForWeb;
 import com.codvision.check.fun.VideoForWeb;
+import com.codvision.check.fun.camera.CameraForWeb;
 import com.codvision.check.handler.CheckHandler;
 import com.codvision.check.handler.Handler;
 import com.codvision.check.permission.WebPermissionCallback;
@@ -32,10 +37,10 @@ import me.xujichang.web.interfaces.IWebJsCallBack;
  * @author xujichang
  */
 public class WebContainerActivity extends DefaultWebViewActivity implements VideoForWeb.FileUploadCallBack {
-    private static final int CAMERA_ACTIVITY = 11;
-    private static final int REQUEST_FILE = 12;
-    private String token;
-    private ValueCallback<Uri[]> mValueCallback;
+    private static final int                  CAMERA_ACTIVITY = 11;
+    private static final int                  REQUEST_FILE    = 12;
+    private              String               token;
+    private              ValueCallback<Uri[]> mValueCallback;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -46,8 +51,8 @@ public class WebContainerActivity extends DefaultWebViewActivity implements Vide
 
     @Override
     protected void initExtHandler(IWebJsCallBack callBack) {
-//        super.initExtHandler(callBack);
-//        new CheckHandler(getWebView(), this);
+        //        super.initExtHandler(callBack);
+        //        new CheckHandler(getWebView(), this);
         new Handler(getWebView()).addJsCallBack(callBack);
     }
 
@@ -136,10 +141,54 @@ public class WebContainerActivity extends DefaultWebViewActivity implements Vide
                     }
                 });
                 break;
+            case Handler.QUICK_CAMERA:
+                workWithPermissionCheck(Manifest.permission.CAMERA, new WebPermissionCallback(function) {
+                    @Override
+                    public void onGain() {
+                        CameraForWeb
+                                .getInstance()
+                                .withFunction(function)
+                                .withContext(getActivity())
+                                .withOpt(data)
+                                .execute();
+                    }
+                });
+                break;
             default:
-                super.onJsCallBack(type, data, function);
+                if (CheckInit.webDebug) {
+                    showDataFromWeb(type, data, function);
+                } else {
+                    super.onJsCallBack(type, data, function);
+                }
                 break;
         }
+    }
+
+    private void showDataFromWeb(String type, String data, CallBackFunction function) {
+        StringBuilder content = new StringBuilder("接口标志：\n").append(type).append("\n");
+        content.append("传递的数据:\n").append(data);
+
+        new MaterialDialog
+                .Builder(getContext())
+                .title("来自Web的数据")
+                .content(content)
+                .negativeText("返回错误")
+                .positiveText("返回正确")
+                .neutralText("不返回数据")
+                .onAny(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        if (which == DialogAction.POSITIVE) {
+                            function.onCallBack(DataType.createRespData(200, "测试成功数据", null));
+                        } else if (which == DialogAction.NEGATIVE) {
+                            function.onCallBack(DataType.createErrorRespData(502, "测试成功数据"));
+                        }
+                        dialog.dismiss();
+                    }
+                })
+                .cancelable(false)
+                .autoDismiss(false)
+                .show();
     }
 
     /**
@@ -161,6 +210,9 @@ public class WebContainerActivity extends DefaultWebViewActivity implements Vide
         }
         if (!catched) {
             catched = VideoForWeb.getInstance().onActivityResult(requestCode, resultCode, data);
+        }
+        if (!catched) {
+            catched = CameraForWeb.getInstance().onActivityResult(requestCode, resultCode, data);
         }
         if (requestCode == REQUEST_FILE) {
             catched = true;

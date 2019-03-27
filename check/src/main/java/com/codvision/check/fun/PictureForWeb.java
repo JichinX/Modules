@@ -15,9 +15,12 @@ import com.google.gson.Gson;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import id.zelory.compressor.Compressor;
+import me.xujichang.ui.utils.BitmapUtil;
 import me.xujichang.util.file.Files;
 import me.xujichang.web.WebConst;
 
@@ -42,6 +45,7 @@ public class PictureForWeb {
     private File cachedPhotoFile;
     private boolean needExifInfo = false;
     private ExifInterface cachedExif = null;
+    private boolean useDateFlag = true;
 
     public static PictureForWeb getInstance() {
         if (null == instance) {
@@ -165,6 +169,12 @@ public class PictureForWeb {
                 } else {
                     path = destFile.getAbsolutePath();
                 }
+            }
+            //添加日期水印
+            if (useDateFlag) {
+                long currentMs = System.currentTimeMillis();
+                String str = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(currentMs);
+                BitmapUtil.addDateWaterMask(path, str, BitmapUtil.WaterLoc.LEFT_TOP);
             }
             if (needExifInfo) {
                 double[] latlng = cachedExif.getLatLong();

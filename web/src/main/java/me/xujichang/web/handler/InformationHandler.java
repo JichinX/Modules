@@ -2,8 +2,6 @@ package me.xujichang.web.handler;
 
 import com.github.lzyzsd.jsbridge.BridgeWebView;
 
-import me.xujichang.web.handler.WebHandler;
-
 
 /**
  * Des:

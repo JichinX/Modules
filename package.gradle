@@ -1,0 +1,30 @@
+android {
+    signingConfigs {
+        release {
+            def keyCfgPath = projectDir.absolutePath + "/keystore/key.properties"
+            Properties properties = new Properties()
+            properties.load(new File(keyCfgPath).newDataInputStream())
+            String keystorePath = isMac?"/Users/xujichang/develop/environment/Android/keystores/":"D:/Android/keystores"
+            storeFile file(keystorePath + properties.getProperty("keyStore_file_name"))
+            storePassword properties.getProperty("keyStore_password")
+            keyAlias properties.getProperty("keyStore_alias")
+            keyPassword properties.getProperty("key_password")
+        }
+    }
+    applicationVariants.all { variant ->
+        variant.outputs.all { output ->
+            String oldName = outputFileName
+            def newName = ''
+            def time = new Date().getTime()
+            if (variant.buildType.name == 'release') {
+                def releaseApkName = oldName.replace("app", "${defaultConfig.applicationId}-v${defaultConfig.versionName}").replace("-release", "")
+                outputFileName = releaseApkName
+            }
+
+            if (variant.buildType.name == 'debug') {
+                newName = oldName.replace("app", "app-v${defaultConfig.versionName}-build-${time}")
+                outputFileName = newName
+            }
+        }
+    }
+}

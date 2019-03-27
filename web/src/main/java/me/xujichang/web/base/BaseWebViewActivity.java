@@ -15,7 +15,6 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.webkit.ConsoleMessage;
 import android.webkit.JsPromptResult;
 import android.webkit.JsResult;
@@ -32,7 +31,7 @@ import com.github.lzyzsd.jsbridge.BridgeWebView;
 import com.github.lzyzsd.jsbridge.CallBackFunction;
 import com.google.common.base.Strings;
 
-import java.net.URL;
+import java.io.File;
 import java.net.URLDecoder;
 
 import me.xujichang.ui.activity.DefaultActionBarActivity;
@@ -41,6 +40,7 @@ import me.xujichang.ui.utils.GlobalUtil;
 import me.xujichang.util.tool.LogTool;
 import me.xujichang.web.R;
 import me.xujichang.web.SystemOperate;
+import me.xujichang.web.WebConst;
 import me.xujichang.web.WebDataParse;
 import me.xujichang.web.client.SelfWebChromeClient;
 import me.xujichang.web.client.SelfWebViewClient;
@@ -61,7 +61,7 @@ import static android.webkit.WebSettings.LOAD_DEFAULT;
  * Created on 2017/11/26 10:21.
  */
 
-public abstract class BaseWebViewActivity extends DefaultActionBarActivity implements IWebBase, IWebJsCallBack {
+public abstract class BaseWebViewActivity extends WebActionbarActivity implements IWebBase, IWebJsCallBack {
     /**
      * 要加载的Url
      */
@@ -96,6 +96,7 @@ public abstract class BaseWebViewActivity extends DefaultActionBarActivity imple
     private WebChromeClient.CustomViewCallback customViewCallback;
 
     @Override
+
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base_web);
@@ -147,12 +148,23 @@ public abstract class BaseWebViewActivity extends DefaultActionBarActivity imple
 
     protected void initWebSetting(WebSettings settings) {
         //配置基本的设置
+        //文件权限
+        settings.setAllowFileAccess(true);
+        settings.setAllowFileAccessFromFileURLs(true);
+        settings.setAllowUniversalAccessFromFileURLs(true);
+        settings.setAllowContentAccess(true);
         //缓存设置为默认：本地 未过期
         settings.setCacheMode(LOAD_DEFAULT);
+        //开启DOM storage API功能
         settings.setDomStorageEnabled(true);
+        //开启database storeage API功能
         settings.setDatabaseEnabled(true);
+        //缓存路径
+        //设置AppCaches缓存路径
+        settings.setAppCachePath(Strings.isNullOrEmpty(WebConst.PATH.PATH_WEB_CACHE) ? useDefaultCachePath() : WebConst.PATH.PATH_WEB_CACHE);
+        //开启AppCaches功能
         settings.setAppCacheEnabled(true);
-        settings.setAppCachePath(getFilesDir().getPath());
+
         //缩放控件
         settings.setDisplayZoomControls(false);
         settings.setBuiltInZoomControls(true);
@@ -160,7 +172,6 @@ public abstract class BaseWebViewActivity extends DefaultActionBarActivity imple
         settings.setGeolocationEnabled(true);
 
         settings.setSupportZoom(true);
-        settings.setAllowFileAccess(true);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             settings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
         }
@@ -168,6 +179,10 @@ public abstract class BaseWebViewActivity extends DefaultActionBarActivity imple
         settings.setLoadWithOverviewMode(true);
 
         settings.setJavaScriptCanOpenWindowsAutomatically(true);
+    }
+
+    private String useDefaultCachePath() {
+        return getFilesDir().getAbsolutePath() + File.separator + "webcache";
     }
 
     private void initWebHandler() {
@@ -257,6 +272,7 @@ public abstract class BaseWebViewActivity extends DefaultActionBarActivity imple
     public void onPageFinished(WebView view, String url) {
         LogTool.d("onPageFinished:" + url);
         mLoading.stop();
+        checkBack();
     }
 
     @Override
@@ -448,17 +464,17 @@ public abstract class BaseWebViewActivity extends DefaultActionBarActivity imple
 
     @Override
     public void onShowCustomView(View pView, WebChromeClient.CustomViewCallback pCallback) {
-//        if (customView != null) {
-//            pCallback.onCustomViewHidden();
-//            return;
-//        }
-//        FrameLayout decor = (FrameLayout) getWindow().getDecorView();
-//        fullscreenContainer = new FullscreenHolder(getContext());
-//        fullscreenContainer.addView(pView, COVER_SCREEN_PARAMS);
-//        decor.addView(fullscreenContainer, COVER_SCREEN_PARAMS);
-//        customView = pView;
-////        setStatusBarVisibility(false);
-//        customViewCallback = pCallback;
+        //        if (customView != null) {
+        //            pCallback.onCustomViewHidden();
+        //            return;
+        //        }
+        //        FrameLayout decor = (FrameLayout) getWindow().getDecorView();
+        //        fullscreenContainer = new FullscreenHolder(getContext());
+        //        fullscreenContainer.addView(pView, COVER_SCREEN_PARAMS);
+        //        decor.addView(fullscreenContainer, COVER_SCREEN_PARAMS);
+        //        customView = pView;
+        ////        setStatusBarVisibility(false);
+        //        customViewCallback = pCallback;
         ViewGroup parent = (ViewGroup) mWebView.getParent();
         parent.removeView(mWebView);
 
@@ -475,22 +491,22 @@ public abstract class BaseWebViewActivity extends DefaultActionBarActivity imple
 
     }
 
-//    private void setStatusBarVisibility(boolean visible) {
-//        int flag = visible ? 0 : WindowManager.LayoutParams.FLAG_FULLSCREEN;
-//        getWindow().setFlags(flag, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-//    }
+    //    private void setStatusBarVisibility(boolean visible) {
+    //        int flag = visible ? 0 : WindowManager.LayoutParams.FLAG_FULLSCREEN;
+    //        getWindow().setFlags(flag, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+    //    }
 
     @Override
     public void onHideCustomView() {
         if (customView == null) {
             return;
         }
-//        setStatusBarVisibility(true);
-//        FrameLayout decor = (FrameLayout) getWindow().getDecorView();
-//        decor.removeView(fullscreenContainer);
-//        fullscreenContainer = null;
-//        customView = null;
-//        customViewCallback.onCustomViewHidden();
+        //        setStatusBarVisibility(true);
+        //        FrameLayout decor = (FrameLayout) getWindow().getDecorView();
+        //        decor.removeView(fullscreenContainer);
+        //        fullscreenContainer = null;
+        //        customView = null;
+        //        customViewCallback.onCustomViewHidden();
         ViewGroup parent = (ViewGroup) customView.getParent();
         parent.removeView(customView);
         parent.addView(mWebView);
@@ -561,28 +577,28 @@ public abstract class BaseWebViewActivity extends DefaultActionBarActivity imple
     }
 
     //=======================按键事件监听==================
-//    @Override
-//    public boolean onKeyUp(int keyCode, KeyEvent event) {
-//        return super.onKeyUp(keyCode, event);
-//    }
-//
-//    @Override
-//    public boolean onKeyDown(int keyCode, KeyEvent event) {
-//        if (onOverrideKeyEvent(keyCode, event)) {
-//            return true;
-//        }
-//        return super.onKeyDown(keyCode, event);
-//    }
-//
-//    protected boolean onOverrideKeyEvent(int keyCode, KeyEvent event) {
-//        if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
-//            if (mWebView.canGoBack()) {
-//                mWebView.goBack();
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
+    //    @Override
+    //    public boolean onKeyUp(int keyCode, KeyEvent event) {
+    //        return super.onKeyUp(keyCode, event);
+    //    }
+    //
+    //    @Override
+    //    public boolean onKeyDown(int keyCode, KeyEvent event) {
+    //        if (onOverrideKeyEvent(keyCode, event)) {
+    //            return true;
+    //        }
+    //        return super.onKeyDown(keyCode, event);
+    //    }
+    //
+    //    protected boolean onOverrideKeyEvent(int keyCode, KeyEvent event) {
+    //        if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
+    //            if (mWebView.canGoBack()) {
+    //                mWebView.goBack();
+    //                return true;
+    //            }
+    //        }
+    //        return false;
+    //    }
 
     /**
      * 是否拦截返回键事件
@@ -597,5 +613,25 @@ public abstract class BaseWebViewActivity extends DefaultActionBarActivity imple
         LogTool.d("onOverrideKeyEvent:code - " + event.getKeyCode() + "  repeat - " + event.getRepeatCount() + "   action - " + event.getAction());
         return false;
     }
+
+    @Override
+    public void onExit() {
+        //退出
+        doExit();
+    }
+
+    @Override
+    public void onBack() {
+        onBackPressed();
+    }
+
+    private void checkBack() {
+        if (!mWebView.canGoBack()) {
+            hideExit();
+        } else {
+            showExit();
+        }
+    }
+
 
 }

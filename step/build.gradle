@@ -37,6 +37,7 @@ dependencies {
     // optional - Guava support for Room, including Optional and ListenableFuture
     implementation "android.arch.persistence.room:guava:$room"
     annotationProcessor "android.arch.persistence.room:compiler:$room"
-    implementation 'me.xujichang.modules:basic:1.0.3'
+//    implementation 'me.xujichang.modules:basic:1.0.3'
+    implementation project(path: ':basic')
 }
 apply from: '../base_upload.gradle'

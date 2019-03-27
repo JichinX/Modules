@@ -8,8 +8,7 @@
     <ViewStub
         android:id="@+id/vs_action_bar_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorPrimary" />
+        android:layout_height="?android:actionBarSize" />
     <!--真正的布局 使用FrameLayout是让子类在使用时无感-->
     <FrameLayout
         android:id="@+id/fl_view_root"

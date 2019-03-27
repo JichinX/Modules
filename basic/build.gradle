@@ -26,12 +26,19 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    api "me.xujichang.lib:xutil:$xutil"
-    api 'com.afollestad.material-dialogs:core:0.9.6.0'
-    api 'com.google.guava:guava:26.0-android'
+    //Retrofit
+    implementation 'com.squareup.retrofit2:retrofit:2.5.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.5.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.12.1'
+    implementation 'com.github.xujichang:Utils:1.0.0'
+//    api "me.xujichang.lib:xutil:$xutil"
+    implementation 'com.afollestad.material-dialogs:core:0.9.6.0'
+    implementation 'com.google.guava:guava:26.0-android'
     implementation "com.android.support:appcompat-v7:$support"
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 }
 apply from: '../base_upload.gradle'
+//apply from: '../jitpack_upload.gradle'

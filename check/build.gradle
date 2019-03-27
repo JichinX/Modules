@@ -1,13 +1,13 @@
 if (!isPlugin.toBoolean()) {
-    apply from: 'https://gitee.com/Sir_XU/codes/qmpdo91yxb8lan04z2frk91/raw?blob_name=package'
+    apply from: '../package.gradle'
 }
 android {
     compileSdkVersion compile_version
     defaultConfig {
         minSdkVersion min_version
         targetSdkVersion target_version
-        versionCode 117
-        versionName "1.1.7"
+        versionCode 1176
+        versionName "1.1.7.6"
         multiDexEnabled true
     }
 
@@ -39,11 +39,14 @@ dependencies {
     implementation project(':web')
     //    implementation 'me.xujichang.modules:web:1.0.2'
     //   basic
-    implementation 'me.xujichang.modules:basic:1.0.3'
+//    implementation 'me.xujichang.modules:basic:1.0.3'
     // ui
     implementation project(':ui')
     //    implementation 'me.xujichang.modules:ui:1.0.5'
     //xutil
-    implementation 'me.xujichang.lib:xutil:1.0.9'
+//    implementation 'me.xujichang.lib:xutil:1.0.9'
+    implementation 'com.github.xujichang:Utils:1.0.0'
+
+    implementation project(path: ':basic')
 }
 apply from: '../base_upload.gradle'

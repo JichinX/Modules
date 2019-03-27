@@ -81,6 +81,23 @@ function videoRecord(){
                                    document.getElementById("video").poster = poster;
                                   });
 }
+
+function testPrint(){
+ window.WebViewJavascriptBridge.callHandler("text_print", {},
+                                  function (responseData) {
+                                   show(responseData)
+                                  });
+}
+function testCamera(opts){
+ window.WebViewJavascriptBridge.callHandler("quick_camera", {
+ opt:opts},
+                                  function (responseData) {
+                                   show(responseData)
+                                  });
+}
 function show(msg) {
     document.getElementById("show").innerHTML = msg;
 };
+function startPlay(){
+  document.getElementById("video").src = "http://10.32.168.149/live/20181218100502350/hls.m3u8";
+}

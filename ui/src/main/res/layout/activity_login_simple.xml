@@ -32,7 +32,6 @@
                     android:layout_marginBottom="@dimen/margin_16dp"
                     android:gravity="center"
                     android:padding="@dimen/padding_6dp"
-                    android:text="智能督察"
                     android:textColor="#508AFF"
                     android:textSize="25sp"
                     android:textStyle="bold" />
@@ -71,8 +70,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_16dp"
                     android:background="@drawable/bg_btn_corner"
-                    android:minHeight="35dp"
                     android:minWidth="0dp"
+                    android:minHeight="35dp"
                     android:text="登录"
                     android:textColor="@color/white"
                     android:textSize="18sp" />

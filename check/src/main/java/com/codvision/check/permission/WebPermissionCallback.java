@@ -23,7 +23,7 @@ public abstract class WebPermissionCallback implements IPermissionCallBack {
     @Override
     public boolean onDenied() {
         if (null != function) {
-            function.onCallBack(DataType.createErrorRespData(WebConst.StatusCode.REQUEST_OTHER, "未获取权限"));
+            function.onCallBack(DataType.createErrorRespData(WebConst.StatusCode.REQUEST_OTHER, "未获取相关权限"));
         }
         return false;
     }

@@ -1,7 +1,7 @@
 ext {
     GRADLE_PLUGIN_VERSION = '1.8.4'
     MAVEN_PLUGIN_VERSION = '2.1'
-    LOCAL_REPO_URL = 'file:///Volumes/Dev/environment/maven/repository/local'
+    LOCAL_REPO_URL = 'file:////Users/xujichang/develop/environment/maven/repository/local'
 //    LOCAL_REPO_URL = "file://${rootDir}/maven"
     GROUP_ID = 'me.xujichang.modules'
     android_job = '1.3.0-alpha06'

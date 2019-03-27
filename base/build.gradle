@@ -21,11 +21,17 @@ android {
 
 }
 dependencies {
+    //Retrofit
+    implementation 'com.squareup.retrofit2:retrofit:2.5.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.5.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.12.1'
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation "com.android.support:appcompat-v7:$support"
-    api('me.xujichang.lib:hybirdbase:1.1.6') {
+    implementation('me.xujichang.lib:hybirdbase:1.1.6') {
         exclude group: 'me.xujichang.lib', module: 'xutil'
     }
-    api "me.xujichang.lib:xutil:$xutil"
+//    api "me.xujichang.lib:xutil:$xutil"
+    implementation 'com.github.xujichang:Utils:1.0.0'
 }
 apply from: "${rootDir}/base_upload.gradle"

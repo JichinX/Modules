@@ -75,7 +75,7 @@ public class MainActivity extends DefaultActionBarActivity {
     }
 
     private void initView() {
-        setActionBarTitle("Web测试Demo");
+        setActionBarTitle("测试");
         mEtUrl = findViewById(R.id.et_url);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         String cachedUrl = preferences.getString("url", "");

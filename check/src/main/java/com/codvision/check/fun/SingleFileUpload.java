@@ -1,7 +1,6 @@
 package com.codvision.check.fun;
 
 
-import com.codvision.check.CheckConst;
 import com.codvision.check.CheckInit;
 import com.codvision.check.api.CommonApi;
 import com.codvision.check.data.DataType;
@@ -9,7 +8,6 @@ import com.github.lzyzsd.jsbridge.CallBackFunction;
 
 import java.io.File;
 
-import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.observers.ResourceObserver;
 import io.reactivex.schedulers.Schedulers;

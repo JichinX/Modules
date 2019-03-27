@@ -213,3 +213,24 @@ NativeAudio:// [路径]
 <a href="tel:10086">拨打 10086</a>
 <a href="sms:10086,10010?body=ceshi">短信10086</a>
 ```
+
+### 三、版本更新
+
+- V1.1.7.4
+
+  > 添加视频录制时参数控制，存在与Data中；参数类如下 
+  > 
+  > ```java
+  > class VideoConfig {
+  > 
+  >         /**
+  >          * 最大录制时间 单位 s
+  >          */
+  >         private int timeMax;
+  >         /**
+  >          * 最小录制时间 单位 s
+  >          */
+  >         private int timeMin;
+  >   //setter getter 略
+  > }
+  > ```

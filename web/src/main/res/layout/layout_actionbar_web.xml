@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorPrimary">
+    <!--返回-->
+    <TextView
+        android:id="@+id/web_tv_actionbar_back"
+        android:layout_width="0dp"
+        android:layout_height="?android:actionBarSize"
+        android:drawableLeft="@drawable/web_ic_left_back"
+        android:gravity="center"
+        android:text="返回"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <!--退出-->
+    <TextView
+        android:id="@+id/web_iv_actionbar_exit"
+        android:layout_width="0dp"
+        android:layout_height="?android:actionBarSize"
+        android:gravity="center"
+        android:src="@drawable/web_ic_close"
+        android:text="关闭"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintLeft_toRightOf="@id/web_tv_actionbar_back"
+        app:layout_constraintTop_toTopOf="parent" />
+    <!--Title-->
+    <TextView
+        android:id="@+id/web_tv_title"
+        android:layout_width="0dp"
+        android:layout_height="?android:actionBarSize"
+        android:ellipsize="middle"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:gravity="center"
+        android:scrollHorizontally="true"
+        android:singleLine="true"
+        android:text="首页"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_max="150dp" />
+    <!--自定义-->
+    <LinearLayout
+        android:id="@+id/web_ll_actionbar_right"
+        android:layout_width="wrap_content"
+        android:layout_height="?android:actionBarSize"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+    </LinearLayout>
+</android.support.constraint.ConstraintLayout>

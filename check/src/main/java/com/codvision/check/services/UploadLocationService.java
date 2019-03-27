@@ -12,7 +12,7 @@
 //import android.support.annotation.Nullable;
 //
 //import com.codvision.check.CheckInit;
-//import com.codvision.check.CheckConst;
+//import com.codvision.check.test.CheckConst;
 //import com.codvision.check.api.CommonApi;
 //import com.codvision.check.bean.LocationUpload;
 //

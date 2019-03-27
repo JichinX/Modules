@@ -9,6 +9,7 @@ import com.codvision.check.video.RecorderConfig;
 import com.codvision.check.video.VideoRecordActivity;
 import com.github.lzyzsd.jsbridge.CallBackFunction;
 import com.google.common.base.Strings;
+import com.google.gson.Gson;
 
 import java.lang.ref.WeakReference;
 
@@ -27,8 +28,8 @@ import me.xujichang.web.WebConst;
  */
 public class VideoForWeb {
     private CallBackFunction function;
-    public static final int REQUEST_VIDEO_RECORD = 20;
-    private FileUploadCallBack fileUpload;
+    public static final int                REQUEST_VIDEO_RECORD = 20;
+    private             FileUploadCallBack fileUpload;
 
     public static VideoForWeb getInstance(CallBackFunction function) {
         VideoForWeb videoForWeb = getInstance();
@@ -64,39 +65,24 @@ public class VideoForWeb {
         return this;
     }
 
+    /**
+     * 对Data 进行解析，解析出参数
+     *
+     * @param data
+     */
     private void obtainConfigWithData(String data) {
-
+        RecorderConfig.reset();
+        if (Strings.isNullOrEmpty(data)) {
+            return;
+        }
+        VideoConfig config = new Gson().fromJson(data, VideoConfig.class);
+        RecorderConfig.setVideoMaxMs(config.timeMax);
+        RecorderConfig.setVideoMinMs(config.timeMin);
     }
 
     private VideoForWeb() {
-        //获取合适的默认值
-        timeMin = 3000;
-        timeMax = 15000;
-        frameRate = 30;
-        videoWidth = 1080;
-        videoHeight = 720;
     }
 
-    /**
-     * 视频宽度
-     */
-    private int videoWidth;
-    /**
-     * 视频高度
-     */
-    private int videoHeight;
-    /**
-     * 最大录制时间
-     */
-    private int timeMax;
-    /**
-     * 最小录制时间
-     */
-    private int timeMin;
-    /**
-     * 帧率
-     */
-    private int frameRate;
     private WeakReference<Activity> mWeakReference;
 
     public void execute() {
@@ -105,27 +91,28 @@ public class VideoForWeb {
             onResultError("上下文引用丢失");
             return;
         }
+        //TODO 添加从文件夹里面选择视频文件
         Activity lActivity = mWeakReference.get();
         lActivity.startActivityForResult(new Intent(lActivity, VideoRecordActivity.class), REQUEST_VIDEO_RECORD);
-//        MediaRecorderConfig config = new MediaRecorderConfig.Buidler()
-//                .fullScreen(true)
-//                .smallVideoWidth(videoWidth)
-//                .smallVideoHeight(videoHeight)
-//                .recordTimeMax(timeMax)
-//                .recordTimeMin(timeMin)
-//                .maxFrameRate(frameRate)
-//                .videoBitrate(0)
-//                .captureThumbnailsTime(1)
-//                .goHome(true, REQUEST_VIDEO_RECORD)
-//                .build();
-//        MediaRecorderActivity.goSmallVideoRecorder(GlobalUtil.getCurrentContext(), null, config);
+        //        MediaRecorderConfig config = new MediaRecorderConfig.Buidler()
+        //                .fullScreen(true)
+        //                .smallVideoWidth(videoWidth)
+        //                .smallVideoHeight(videoHeight)
+        //                .recordTimeMax(timeMax)
+        //                .recordTimeMin(timeMin)
+        //                .maxFrameRate(frameRate)
+        //                .videoBitrate(0)
+        //                .captureThumbnailsTime(1)
+        //                .goHome(true, REQUEST_VIDEO_RECORD)
+        //                .build();
+        //        MediaRecorderActivity.goSmallVideoRecorder(GlobalUtil.getCurrentContext(), null, config);
     }
 
     public boolean onActivityResult(int requestCode, int resultCode, Intent intent) {
         if (requestCode == REQUEST_VIDEO_RECORD) {
             if (resultCode == Activity.RESULT_OK) {
-                String path = intent.getStringExtra(RecorderConfig.FILE_PATH);
-                String name = intent.getStringExtra(RecorderConfig.FILE_NAME);
+                String path      = intent.getStringExtra(RecorderConfig.FILE_PATH);
+                String name      = intent.getStringExtra(RecorderConfig.FILE_NAME);
                 String thumbnail = intent.getStringExtra(RecorderConfig.FILE_THUMBNAIL);
                 LogTool.d("视频录制的返回结果:path - " + path + "  name - " + name + "  thumbnail - " + thumbnail);
                 if (Strings.isNullOrEmpty(path) || Strings.isNullOrEmpty(name)) {
@@ -159,5 +146,69 @@ public class VideoForWeb {
 
     public interface FileUploadCallBack {
         void onUpload(UploadFile file);
+    }
+
+    class VideoConfig {
+
+        /**
+         * 视频宽度
+         */
+        private int videoWidth;
+        /**
+         * 视频高度
+         */
+        private int videoHeight;
+        /**
+         * 最大录制时间
+         */
+        private int timeMax;
+        /**
+         * 最小录制时间
+         */
+        private int timeMin;
+        /**
+         * 帧率
+         */
+        private int frameRate;
+
+        public int getVideoWidth() {
+            return videoWidth;
+        }
+
+        public void setVideoWidth(int videoWidth) {
+            this.videoWidth = videoWidth;
+        }
+
+        public int getVideoHeight() {
+            return videoHeight;
+        }
+
+        public void setVideoHeight(int videoHeight) {
+            this.videoHeight = videoHeight;
+        }
+
+        public int getTimeMax() {
+            return timeMax;
+        }
+
+        public void setTimeMax(int timeMax) {
+            this.timeMax = timeMax;
+        }
+
+        public int getTimeMin() {
+            return timeMin;
+        }
+
+        public void setTimeMin(int timeMin) {
+            this.timeMin = timeMin;
+        }
+
+        public int getFrameRate() {
+            return frameRate;
+        }
+
+        public void setFrameRate(int frameRate) {
+            this.frameRate = frameRate;
+        }
     }
 }

@@ -39,6 +39,7 @@ public class CheckInit implements IBaseInit {
     public static String LOCATION_UPLOAD_PATH = "";
     public static String PHOTO_UPLOAD_PATH = "";
 
+    public static boolean webDebug = false;
     public static Location location;
     public static File cacheFile;
     private Location lastUploadLocation;
@@ -47,6 +48,10 @@ public class CheckInit implements IBaseInit {
     private static int wzsbjzsj = 240000;
     private static int wzsbjg = 30000;
     private static int yxdwjl = 200;
+
+    public static void enableWebDebug() {
+        webDebug = true;
+    }
 
     @Override
     public boolean onInitSpeed(Application application) {
