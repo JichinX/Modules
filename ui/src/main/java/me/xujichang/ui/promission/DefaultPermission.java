@@ -1,7 +1,9 @@
 package me.xujichang.ui.promission;
 
+import android.app.Activity;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.PermissionChecker;
 
@@ -57,7 +59,7 @@ public class DefaultPermission implements IPermission {
     public void requestPermission(List<String> pm) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             String[] strings = new String[pm.size()];
-            GlobalUtil.getCurrentContext().requestPermissions(pm.toArray(strings), REQUEST_PERMISSION);
+            GlobalUtil.getCurrentActivity().requestPermissions(pm.toArray(strings), REQUEST_PERMISSION);
         }
     }
 

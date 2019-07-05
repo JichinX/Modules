@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.Application;
 import android.app.Dialog;
+import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.DrawableRes;
@@ -20,6 +21,7 @@ import java.lang.ref.WeakReference;
 import me.xujichang.ui.activity.dialog.DialogWhich;
 import me.xujichang.ui.activity.dialog.IDialog;
 import me.xujichang.ui.activity.dialog.IDialogCallBack;
+import me.xujichang.ui.test.App;
 
 import static android.content.Context.ACTIVITY_SERVICE;
 
@@ -34,8 +36,16 @@ import static android.content.Context.ACTIVITY_SERVICE;
 public class GlobalUtil implements Application.ActivityLifecycleCallbacks {
     private static WeakReference<Activity> currentContext;
     private static volatile long start = 0;
+    private Application mApplication;
 
-    public static Activity getCurrentContext() {
+    public static Context getCurrentContext() {
+        if (null == getCurrentActivity()) {
+            return Holder.instance.mApplication;
+        }
+        return getCurrentActivity();
+    }
+
+    public static Activity getCurrentActivity() {
         return currentContext.get();
     }
 
@@ -76,10 +86,11 @@ public class GlobalUtil implements Application.ActivityLifecycleCallbacks {
     }
 
     public static void init(Application application) {
-        application.registerActivityLifecycleCallbacks(instance());
+        application.registerActivityLifecycleCallbacks(instance(application));
     }
 
-    private static GlobalUtil instance() {
+    private static GlobalUtil instance(Application vApplication) {
+        Holder.instance.mApplication = vApplication;
         return Holder.instance;
     }
 
@@ -108,7 +119,7 @@ public class GlobalUtil implements Application.ActivityLifecycleCallbacks {
         if (checkContext()) {
             long current = System.currentTimeMillis();
             if (current - start < exit) {
-                getCurrentContext().finish();
+                getCurrentActivity().finish();
                 System.gc();
                 if (null != callBack) {
                     callBack.onExit();

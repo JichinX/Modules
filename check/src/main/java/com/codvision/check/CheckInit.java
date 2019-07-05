@@ -20,7 +20,6 @@ import me.xujichang.ui.utils.GlobalUtil;
 import me.xujichang.util.retrofit.RetrofitManager;
 import me.xujichang.util.simple.SilentResourceObserver;
 import me.xujichang.util.system.SystemInfo;
-import me.xujichang.util.thirdparty.DeviceUtils;
 import me.xujichang.util.thirdparty.LocationUtils;
 import me.xujichang.util.thirdparty.Utils;
 import me.xujichang.util.tool.LogTool;
@@ -34,6 +33,7 @@ import me.xujichang.util.tool.LogTool;
  */
 public class CheckInit implements IBaseInit {
     public static final String INIT_TAG = "com.codvision.check.CheckInit";
+    private static boolean ENABLE_UPLOAD_LOCATION = false;
     public static String TOKEN_KEY = "token";
     public static String LOCATION_UPLOAD_TYPE = "8000010";
     public static String LOCATION_UPLOAD_PATH = "";
@@ -57,10 +57,7 @@ public class CheckInit implements IBaseInit {
     public boolean onInitSpeed(Application application) {
 //        B.enablePacketService = false;
         cacheFile = application.getExternalFilesDir(null);
-        Task uploadTask = new Task();
-        uploadTask.setRunnable(new UploadLocationRunnable());
-        TaskCenter.push(uploadTask);
-        Utils.init(application);
+
 //        initSmallVideo();
         return false;
     }
@@ -73,7 +70,18 @@ public class CheckInit implements IBaseInit {
 //        } else {
 //            application.startService(service);
 //        }
+        enableLocationUpload(ENABLE_UPLOAD_LOCATION, application);
         return false;
+    }
+
+    private void enableLocationUpload(boolean vEnable, Application application) {
+        if (!vEnable) {
+            return;
+        }
+        Task uploadTask = new Task();
+        uploadTask.setRunnable(new UploadLocationRunnable());
+        TaskCenter.push(uploadTask);
+        Utils.init(application);
     }
 
     private class UploadLocationRunnable implements Runnable {

@@ -62,7 +62,7 @@ public class MainActivity extends DefaultActionBarActivity {
             url = url.trim();
         }
         if (Strings.isNullOrEmpty(url)) {
-            url = "file:///android_asset/web/index.html";
+            url = "file:///android_asset/web/test_index.html";
         } else {
             //保存
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
@@ -80,5 +80,13 @@ public class MainActivity extends DefaultActionBarActivity {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         String cachedUrl = preferences.getString("url", "");
         mEtUrl.setText(cachedUrl);
+    }
+
+    public void goToWeb2(View view) {
+        mEtUrl.setText("https://openlayers.org/en/latest/examples/animation.html");
+    }
+
+    public void goToWeb1(View view) {
+        mEtUrl.setText("http://maptalks.org/examples/en/map/load/");
     }
 }

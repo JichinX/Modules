@@ -16,4 +16,17 @@
         android:layout_height="wrap_content"
         android:onClick="goToWeb"
         android:text="GO" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="goToWeb1"
+        android:text="GO Test1" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="goToWeb2"
+        android:text="GO Test2" />
+
 </LinearLayout>
