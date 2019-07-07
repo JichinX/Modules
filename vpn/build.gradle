@@ -6,6 +6,9 @@ android {
         targetSdkVersion target_version
         versionCode 104
         versionName "1.0.4"
+        manifestPlaceholders = [
+                PACKAGE_NAME: "",
+        ]
     }
 
     buildTypes {

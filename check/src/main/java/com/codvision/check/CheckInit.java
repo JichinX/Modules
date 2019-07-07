@@ -33,7 +33,7 @@ import me.xujichang.util.tool.LogTool;
  */
 public class CheckInit implements IBaseInit {
     public static final String INIT_TAG = "com.codvision.check.CheckInit";
-    private static boolean ENABLE_UPLOAD_LOCATION = false;
+    public static boolean ENABLE_UPLOAD_LOCATION = true;
     public static String TOKEN_KEY = "token";
     public static String LOCATION_UPLOAD_TYPE = "8000010";
     public static String LOCATION_UPLOAD_PATH = "";

@@ -1,5 +1,3 @@
-apply plugin: 'com.android.application'
-
 android {
     compileSdkVersion compile_version
     defaultConfig {
@@ -8,8 +6,10 @@ android {
         targetSdkVersion target_version
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
+        manifestPlaceholders = [
+                PACKAGE_NAME  : applicationId,
+        ]
     }
     buildTypes {
         release {
@@ -29,9 +29,6 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation "com.android.support:appcompat-v7:$support"
     implementation "com.android.support.constraint:constraint-layout:$constraint"
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     implementation project(path: ':base')
     implementation project(path: ':vpn')
     implementation 'com.github.xujichang:Utils:1.0.0'

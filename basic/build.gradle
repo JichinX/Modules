@@ -6,9 +6,9 @@ android {
         targetSdkVersion target_version
         versionCode 103
         versionName "1.0.3"
-
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
+        manifestPlaceholders = [
+                PACKAGE_NAME: "",
+        ]
     }
 
     buildTypes {
@@ -46,9 +46,6 @@ dependencies {
 //    api "me.xujichang.lib:xutil:$xutil"
     implementation 'com.afollestad.material-dialogs:core:0.9.6.0'
     implementation "com.android.support:appcompat-v7:$support"
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 }
 apply from: '../base_upload.gradle'
 //apply from: '../jitpack_upload.gradle'

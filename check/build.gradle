@@ -10,6 +10,9 @@ android {
         versionCode 1176
         versionName "1.1.7.6"
         multiDexEnabled true
+        manifestPlaceholders = [
+                PACKAGE_NAME: "",
+        ]
     }
 
     buildTypes {
