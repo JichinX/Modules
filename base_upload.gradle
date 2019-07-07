@@ -1,4 +1,4 @@
-//apply from: 'https://raw.githubusercontent.com/xujichang/CommonConfig/master/gradle/jitpack.gradle'
+apply from: 'https://raw.githubusercontent.com/xujichang/CommonConfig/master/gradle/jitpack.gradle'
 
 ////apply plugin: "com.github.dcendents.android-maven"
 //apply plugin: "com.jfrog.bintray"
