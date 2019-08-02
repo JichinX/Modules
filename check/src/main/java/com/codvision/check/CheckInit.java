@@ -70,6 +70,7 @@ public class CheckInit implements IBaseInit {
 //        } else {
 //            application.startService(service);
 //        }
+        Utils.init(application);
         enableLocationUpload(ENABLE_UPLOAD_LOCATION, application);
         return false;
     }
@@ -81,7 +82,6 @@ public class CheckInit implements IBaseInit {
         Task uploadTask = new Task();
         uploadTask.setRunnable(new UploadLocationRunnable());
         TaskCenter.push(uploadTask);
-        Utils.init(application);
     }
 
     private class UploadLocationRunnable implements Runnable {
